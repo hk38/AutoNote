@@ -55,8 +55,6 @@ class TimetableFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Toast.makeText(context, "!!", Toast.LENGTH_SHORT).show()
-
         if(resultCode == Activity.RESULT_OK) setClassData(requestCode)
     }
 
