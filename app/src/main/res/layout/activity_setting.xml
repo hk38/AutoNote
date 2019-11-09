@@ -63,38 +63,42 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:background="@drawable/round_background"
                     android:gravity="center"
                     android:text="@string/first"
                     android:textColor="#FFFFFF"
                     android:textSize="30sp" />
 
-                <EditText
+                <Button
                     android:id="@+id/editStart1st"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="hh:mm"
-                    android:inputType="time"
+                    android:text="00:00"
                     android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:text="@string/time_to_time" />
 
-                <EditText
+                <Button
                     android:id="@+id/editEnd1st"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="hh:mm"
-                    android:inputType="time"
+                    android:text="00:00"
                     android:textSize="18sp" />
             </LinearLayout>
 
@@ -109,38 +113,42 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:background="@drawable/round_background"
                     android:gravity="center"
                     android:text="@string/second"
                     android:textColor="#FFFFFF"
                     android:textSize="30sp" />
 
-                <EditText
+                <Button
                     android:id="@+id/editStart2nd"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="hh:mm"
-                    android:inputType="time"
+                    android:text="00:00"
                     android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:text="@string/time_to_time" />
 
-                <EditText
+                <Button
                     android:id="@+id/editEnd2nd"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="hh:mm"
-                    android:inputType="time"
+                    android:text="00:00"
                     android:textSize="18sp" />
             </LinearLayout>
 
@@ -155,38 +163,42 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:background="@drawable/round_background"
                     android:gravity="center"
                     android:text="@string/third"
                     android:textColor="#FFFFFF"
                     android:textSize="30sp" />
 
-                <EditText
+                <Button
                     android:id="@+id/editStart3rd"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="hh:mm"
-                    android:inputType="time"
+                    android:text="00:00"
                     android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:text="@string/time_to_time" />
 
-                <EditText
+                <Button
                     android:id="@+id/editEnd3rd"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="hh:mm"
-                    android:inputType="time"
+                    android:text="00:00"
                     android:textSize="18sp" />
             </LinearLayout>
 
@@ -201,38 +213,42 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:background="@drawable/round_background"
                     android:gravity="center"
                     android:text="@string/fourth"
                     android:textColor="#FFFFFF"
                     android:textSize="30sp" />
 
-                <EditText
+                <Button
                     android:id="@+id/editStart4th"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="hh:mm"
-                    android:inputType="time"
+                    android:text="00:00"
                     android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:text="@string/time_to_time" />
 
-                <EditText
+                <Button
                     android:id="@+id/editEnd4th"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="hh:mm"
-                    android:inputType="time"
+                    android:text="00:00"
                     android:textSize="18sp" />
             </LinearLayout>
         </LinearLayout>

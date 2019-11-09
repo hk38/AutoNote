@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HUM2019</string>
+    <string name="app_name">AutoNote</string>
     <string name="tab_text_1">月</string>
     <string name="tab_text_2">火</string>
     <string name="tab_text_3">水</string>

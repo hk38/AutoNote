@@ -36,14 +36,15 @@ class MainActivity : AppCompatActivity() {
         Realm.init(this)
         val realm = Realm.getDefaultInstance()
 
-        val resultClass = realm.where(ClassData::class.java).findAll()
-        if(resultClass.isEmpty()) setUpClass(realm)
+        if(realm.where(ClassData::class.java).findAll().isEmpty()) setUpClass(realm)
 
-        val resultSetting = realm.where(SettingData::class.java).findAll()
-        if(resultSetting.isEmpty()) setUpSetting(realm)
+        if(realm.where(SettingData::class.java).findAll().isEmpty()) setUpSetting(realm)
 
-        fab.setOnClickListener { view ->
-            cameraTask()
+        fab.setOnClickListener { cameraTask() }
+
+        fab.setOnLongClickListener {
+
+            true
         }
 
         imageButtonOption.setOnClickListener{
@@ -56,27 +57,27 @@ class MainActivity : AppCompatActivity() {
         realm.executeTransaction {
             for(i in 0..4){
                 val class1st: ClassData = realm.createObject(ClassData::class.java, i*10+0)
-                class1st.className = "授業名${i*10+0}"
-                class1st.place = "場所"
-                class1st.teacherName = "担当教員名"
+                class1st.className = null
+                class1st.place = null
+                class1st.teacherName = null
                 class1st.pictureData = null
 
                 val class2nd: ClassData = realm.createObject(ClassData::class.java, i*10+1)
-                class2nd.className = "授業名${i*10+1}"
-                class2nd.place = "場所"
-                class2nd.teacherName = "担当教員名"
+                class2nd.className = null
+                class2nd.place = null
+                class2nd.teacherName = null
                 class2nd.pictureData = null
 
                 val class3rd: ClassData = realm.createObject(ClassData::class.java, i*10+2)
-                class3rd.className = "授業名${i*10+2}"
-                class3rd.place = "場所"
-                class3rd.teacherName = "担当教員名"
+                class3rd.className = null
+                class3rd.place = null
+                class3rd.teacherName = null
                 class3rd.pictureData = null
 
                 val class4th: ClassData = realm.createObject(ClassData::class.java, i*10+3)
-                class4th.className = "授業名${i*10+3}"
-                class4th.place = "場所"
-                class4th.teacherName = "担当教員名"
+                class4th.className = null
+                class4th.place = null
+                class4th.teacherName = null
                 class4th.pictureData = null
             }
         }
@@ -101,11 +102,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == PERMISSION) {
             // requestPermissionsで設定した順番で結果が格納されています。
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -124,28 +121,20 @@ class MainActivity : AppCompatActivity() {
 
     fun cameraTask() {
         // カメラの権限の確認
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.CAMERA
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             // 許可されていない
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.CAMERA
-                )
-            ) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) && ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 // すでに１度パーミッションのリクエストが行われていて、
                 // ユーザーに「許可しない（二度と表示しないは非チェック）」をされていると
                 // この処理が呼ばれます。
                 Toast.makeText(this, "パーミッションがOFFになっています。", Toast.LENGTH_SHORT).show()
+            } else if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)){
+                Toast.makeText(this, "カメラのパーミッションがOFFになっています。", Toast.LENGTH_SHORT).show()
+            } else if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                Toast.makeText(this, "ストレージ書き込みのパーミッションがOFFになっています。", Toast.LENGTH_SHORT).show()
             } else {
                 // パーミッションのリクエストを表示
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.CAMERA),
-                    PERMISSION
-                )
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION)
             }
             return
         }
