@@ -1,7 +1,6 @@
 package ucl.hk69.auto_note
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
@@ -9,11 +8,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.widget.ImageButton
 import android.widget.Toast
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.tabs.TabLayout
-import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -98,7 +93,15 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CAMERA && resultCode == Activity.RESULT_OK) {
-//            photoImageView.setImageURI(pictureUri)
+            val id : Int = 0
+
+            val realm = Realm.getDefaultInstance()
+            realm.executeTransaction{
+                val photoData = realm.createObject(PictureData::class.java)
+                photoData.pass = pictureUri.toString()
+                val classData = realm.where(ClassData::class.java).equalTo("id", id).findFirst()
+                classData.pictureData?.add(photoData)
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package ucl.hk69.auto_note
 
+import android.net.Uri
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
@@ -17,9 +18,9 @@ open class PictureData : RealmObject(){
 
 open class ClassData : RealmObject() {
     @PrimaryKey
-    internal open var id: Int = 0
-    internal open var className: String? = null
-    internal open var teacherName: String? = null
-    internal open var place: String? = null
+    open var id: Int = 0
+    open var className: String? = null
+    open var teacherName: String? = null
+    open var place: String? = null
     open var pictureData: RealmList<PictureData>? = null
 }
