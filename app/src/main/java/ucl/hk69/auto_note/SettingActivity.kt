@@ -26,8 +26,8 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
             val startTime = realm.where(SettingData::class.java).equalTo("id", i*10 + 0).findFirst()
             val endTime = realm.where(SettingData::class.java).equalTo("id", i*10+1).findFirst()
 
-            if(startTime.time != null) startTimeArray[i].text = startTime.time
-            if(endTime.time != null) endTimeArray[i].text = endTime.time
+            startTimeArray[i].text = startTime.hour + ":" + startTime.minute
+            endTimeArray[i].text = endTime.hour + ":" + endTime.minute
 
             startTimeArray[i].setOnClickListener {
                 timeSetButton = startTimeArray[i]
@@ -46,10 +46,14 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
             realm.executeTransaction {
                 for(i in 0..3){
                     val startTime = realm.where(SettingData::class.java).equalTo("id", i*10 + 0).findFirst()
-                    startTime.time = startTimeArray[i].text.toString()
+                    val startText = startTimeArray[i].text.toString().split(":")
+                    startTime.hour = startText[0]
+                    startTime.minute = startText[1]
 
                     val endTime = realm.where(SettingData::class.java).equalTo("id", i*10+1).findFirst()
-                    endTime.time = endTimeArray[i].text.toString()
+                    val endText = endTimeArray[i].text.toString().split(":")
+                    endTime.hour = endText[0]
+                    endTime.minute = endText[1]
                 }
             }
             finish()
@@ -57,8 +61,7 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
     }
 
     override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
-        val str = String.format(Locale.JAPAN, "%d:%d", hourOfDay, minute)
-        // use the plug in of Kotlin Android Extensions
+        val str = String.format(Locale.JAPAN, "%02d:%02d", hourOfDay, minute)
         timeSetButton?.text = str
     }
 }

@@ -14,6 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     val CAMERA = 1
@@ -52,27 +53,27 @@ class MainActivity : AppCompatActivity() {
         realm.executeTransaction {
             for(i in 0..4){
                 val class1st: ClassData = realm.createObject(ClassData::class.java, i*10+0)
-                class1st.className = null
-                class1st.place = null
-                class1st.teacherName = null
+                class1st.className = ""
+                class1st.place = ""
+                class1st.teacherName = ""
                 class1st.pictureData = null
 
                 val class2nd: ClassData = realm.createObject(ClassData::class.java, i*10+1)
-                class2nd.className = null
-                class2nd.place = null
-                class2nd.teacherName = null
+                class2nd.className = ""
+                class2nd.place = ""
+                class2nd.teacherName = ""
                 class2nd.pictureData = null
 
                 val class3rd: ClassData = realm.createObject(ClassData::class.java, i*10+2)
-                class3rd.className = null
-                class3rd.place = null
-                class3rd.teacherName = null
+                class3rd.className = ""
+                class3rd.place = ""
+                class3rd.teacherName = ""
                 class3rd.pictureData = null
 
                 val class4th: ClassData = realm.createObject(ClassData::class.java, i*10+3)
-                class4th.className = null
-                class4th.place = null
-                class4th.teacherName = null
+                class4th.className = ""
+                class4th.place = ""
+                class4th.teacherName = ""
                 class4th.pictureData = null
             }
         }
@@ -82,10 +83,12 @@ class MainActivity : AppCompatActivity() {
         realm.executeTransaction {
             for(i in 0..3){
                 val startTime: SettingData = realm.createObject(SettingData::class.java, i*10+0)
-                startTime.time = null
+                startTime.hour = "00"
+                startTime.minute = "00"
 
                 val endTime: SettingData = realm.createObject(SettingData::class.java, i*10+1)
-                endTime.time = null
+                endTime.hour = "00"
+                endTime.minute = "00"
             }
         }
     }
@@ -93,14 +96,14 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CAMERA && resultCode == Activity.RESULT_OK) {
-            val id : Int = 0
-
             val realm = Realm.getDefaultInstance()
             realm.executeTransaction{
-                val photoData = realm.createObject(PictureData::class.java)
-                photoData.pass = pictureUri.toString()
-                val classData = realm.where(ClassData::class.java).equalTo("id", id).findFirst()
-                classData.pictureData?.add(photoData)
+                val classData = realm.where(ClassData::class.java).equalTo("id", getID()).findFirst()
+                if(classData != null) {
+                    val photoData = realm.createObject(PictureData::class.java)
+                    photoData.pass = pictureUri.toString()
+                    classData.pictureData?.add(photoData)
+                }
             }
         }
     }
@@ -108,7 +111,7 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == PERMISSION) {
             // requestPermissionsで設定した順番で結果が格納されています。
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 // 許可されたので処理を続行
                 takePicture()
             } else {
@@ -155,6 +158,34 @@ class MainActivity : AppCompatActivity() {
         val intent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri)
         startActivityForResult(intent, CAMERA)
+    }
+
+    fun getID(): Int{
+        val cal = Calendar.getInstance()
+        val realm = Realm.getDefaultInstance()
+        var temp = 9
+
+        for(i in 0..3){
+            val startTimeData = realm.where(SettingData::class.java).equalTo("id", i*10+0).findFirst()
+            val endTimeData = realm.where(SettingData::class.java).equalTo("id", i*10+1).findFirst()
+            val nowTime = cal.get(Calendar.HOUR_OF_DAY) * 100 + cal.get(Calendar.MINUTE)
+            val startTime = Integer.parseInt("${startTimeData.hour}${startTimeData.minute}")
+            val endTime = Integer.parseInt("${endTimeData.hour}${endTimeData.minute}")
+
+            if( nowTime in startTime..endTime){
+                temp = i
+                break
+            }
+        }
+
+        return when(cal.get(Calendar.DAY_OF_WEEK)){
+            Calendar.MONDAY -> 0
+            Calendar.TUESDAY -> 10
+            Calendar.WEDNESDAY -> 20
+            Calendar.THURSDAY -> 30
+            Calendar.FRIDAY -> 40
+            else -> 0
+        } + temp
     }
 
 }

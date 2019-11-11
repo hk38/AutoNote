@@ -41,6 +41,7 @@ class TimetableFragment : Fragment() {
 
             classArray[i].setOnClickListener {
                 val intent = Intent(context, ListActivity::class.java)
+                intent.putExtra("ID", fgmID + i)
                 startActivity(intent)
             }
 

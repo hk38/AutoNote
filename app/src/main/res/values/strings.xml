@@ -5,10 +5,15 @@
     <string name="tab_text_3">水</string>
     <string name="tab_text_4">木</string>
     <string name="tab_text_5">金</string>
+    <string name="tab_text_6">土</string>
+    <string name="tab_text_7">日</string>
     <string name="first">1</string>
     <string name="second">2</string>
     <string name="third">3</string>
     <string name="fourth">4</string>
+    <string name="fifth">5</string>
+    <string name="sixth">6</string>
+    <string name="seventh">7</string>
     <string name="title_activity_class_setting">授業内容の編集</string>
     <string name="title_activity_setting">時間設定</string>
     <string name="title_activity_list">一覧</string>

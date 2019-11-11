@@ -23,7 +23,7 @@ class ClassSettingActivity : AppCompatActivity() {
         editPlace.setText(classData.place)
         editTeacher.setText(classData.teacherName)
 
-        fab.setOnClickListener { view ->
+        fab.setOnClickListener {
             realm.executeTransaction{
                 classData.className = editClassName.text.toString()
                 classData.place = editPlace.text.toString()

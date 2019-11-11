@@ -8,19 +8,20 @@ import io.realm.annotations.PrimaryKey
 open class SettingData : RealmObject(){
     @PrimaryKey
     open var id: Int = 0
-    open var time: String? = null
+    open var hour: String = ""
+    open var minute: String = ""
 }
 
 open class PictureData : RealmObject(){
-    open var text: String? = null
-    open var pass: String? = null
+    open var text: String = ""
+    open var pass: String = ""
 }
 
 open class ClassData : RealmObject() {
     @PrimaryKey
     open var id: Int = 0
-    open var className: String? = null
-    open var teacherName: String? = null
-    open var place: String? = null
+    open var className: String = ""
+    open var teacherName: String = ""
+    open var place: String = ""
     open var pictureData: RealmList<PictureData>? = null
 }
