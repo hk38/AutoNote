@@ -30,13 +30,20 @@ class TimetableFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val realm = Realm.getDefaultInstance()
         fgmID = arguments?.getInt("ID") ?: 0
-        classArray = arrayOf(ll1st, ll2nd, ll3rd, ll4th)
-        classNameArray = arrayOf(text1stTitle, text2ndTitle, text3rdTitle, text4thTitle)
-        placeArray = arrayOf(text1stPlace, text2ndPlace, text3rdPlace, text4thPlace)
-        teacherArray = arrayOf(text1stTeacher, text2ndTeacher, text3rdTeacher, text4thTeacher)
+        classArray = arrayOf(ll1st, ll2nd, ll3rd, ll4th, ll5th, ll6th, ll7th)
+        classNameArray = arrayOf(text1stTitle, text2ndTitle, text3rdTitle, text4thTitle, text5thTitle, text6thTitle, text7thTitle)
+        placeArray = arrayOf(text1stPlace, text2ndPlace, text3rdPlace, text4thPlace, text5thPlace, text6thPlace, text7thPlace)
+        teacherArray = arrayOf(text1stTeacher, text2ndTeacher, text3rdTeacher, text4thTeacher, text5thTeacher, text6thTeacher, text7thTeacher)
 
-        for(i in classArray.indices){
+        val time = Realm.getDefaultInstance().where(OptionData::class.java).equalTo("key", 0).findFirst().numOfTime
+
+        if(time > 4) ll5th.visibility = View.VISIBLE
+        if(time > 5) ll6th.visibility = View.VISIBLE
+        if(time > 6) ll7th.visibility = View.VISIBLE
+
+        for(i in 0 until time){
             setClassData(i)
 
             classArray[i].setOnClickListener {
@@ -60,8 +67,7 @@ class TimetableFragment : Fragment() {
     }
 
     fun setClassData(i: Int){
-        val realm = Realm.getDefaultInstance()
-        val classData = realm.where(ClassData::class.java).equalTo("id", fgmID + i).findFirst()
+        val classData = Realm.getDefaultInstance().where(ClassData::class.java).equalTo("id", fgmID + i).findFirst()
 
         classNameArray[i].text = classData.className
         placeArray[i].text = classData.place

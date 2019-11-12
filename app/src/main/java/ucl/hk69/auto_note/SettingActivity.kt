@@ -2,6 +2,7 @@ package ucl.hk69.auto_note
 
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.TimePicker
 import androidx.appcompat.app.AppCompatActivity
@@ -19,15 +20,20 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
         setSupportActionBar(toolbar)
 
         val realm = Realm.getDefaultInstance()
-        val startTimeArray = arrayOf(editStart1st, editStart2nd, editStart3rd, editStart4th)
-        val endTimeArray = arrayOf(editEnd1st, editEnd2nd, editEnd3rd, editEnd4th)
+        val startTimeArray = arrayOf(editStart1st, editStart2nd, editStart3rd, editStart4th, editStart5th, editStart6th, editStart7th)
+        val endTimeArray = arrayOf(editEnd1st, editEnd2nd, editEnd3rd, editEnd4th, editEnd5th, editEnd6th, editEnd7th)
+        val time = realm.where(OptionData::class.java).equalTo("key", 0).findFirst().numOfTime
 
-        for(i in 0..3){
+        if(time > 4) ll5th.visibility = View.VISIBLE
+        if(time > 5) ll6th.visibility = View.VISIBLE
+        if(time > 6) ll7th.visibility = View.VISIBLE
+
+        for(i in 0 until time){
             val startTime = realm.where(SettingData::class.java).equalTo("id", i*10 + 0).findFirst()
             val endTime = realm.where(SettingData::class.java).equalTo("id", i*10+1).findFirst()
 
-            startTimeArray[i].text = startTime.hour + ":" + startTime.minute
-            endTimeArray[i].text = endTime.hour + ":" + endTime.minute
+            startTimeArray[i].text = "${startTime.hour}:${startTime.minute}"
+            endTimeArray[i].text = "${endTime.hour}:${endTime.minute}"
 
             startTimeArray[i].setOnClickListener {
                 timeSetButton = startTimeArray[i]
@@ -44,7 +50,7 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
 
         fab.setOnClickListener {
             realm.executeTransaction {
-                for(i in 0..3){
+                for(i in 0 until time){
                     val startTime = realm.where(SettingData::class.java).equalTo("id", i*10 + 0).findFirst()
                     val startText = startTimeArray[i].text.toString().split(":")
                     startTime.hour = startText[0]

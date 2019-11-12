@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentPagerAdapter
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
@@ -25,23 +26,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val fragmentAdapter = FragmentAdapter(this, supportFragmentManager)
-        view_pager.adapter = fragmentAdapter
-        tabs.setupWithViewPager(view_pager)
-
         Realm.init(this)
         val realm = Realm.getDefaultInstance()
 
         if(realm.where(ClassData::class.java).findAll().isEmpty()) setUpClass(realm)
-
         if(realm.where(SettingData::class.java).findAll().isEmpty()) setUpSetting(realm)
+        if(realm.where(OptionData::class.java).findAll().isEmpty()) setUpOption(realm)
+
+        val fragmentAdapter = FragmentAdapter(this, supportFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
+        view_pager.adapter = fragmentAdapter
+        tabs.setupWithViewPager(view_pager)
 
         fab.setOnClickListener { cameraTask() }
-
-        fab.setOnLongClickListener {
-
-            true
-        }
 
         imageButtonOption.setOnClickListener{
             val intent = Intent(this, SettingActivity::class.java)
@@ -51,37 +47,21 @@ class MainActivity : AppCompatActivity() {
 
     fun setUpClass(realm: Realm){
         realm.executeTransaction {
-            for(i in 0..4){
-                val class1st: ClassData = realm.createObject(ClassData::class.java, i*10+0)
-                class1st.className = ""
-                class1st.place = ""
-                class1st.teacherName = ""
-                class1st.pictureData = null
-
-                val class2nd: ClassData = realm.createObject(ClassData::class.java, i*10+1)
-                class2nd.className = ""
-                class2nd.place = ""
-                class2nd.teacherName = ""
-                class2nd.pictureData = null
-
-                val class3rd: ClassData = realm.createObject(ClassData::class.java, i*10+2)
-                class3rd.className = ""
-                class3rd.place = ""
-                class3rd.teacherName = ""
-                class3rd.pictureData = null
-
-                val class4th: ClassData = realm.createObject(ClassData::class.java, i*10+3)
-                class4th.className = ""
-                class4th.place = ""
-                class4th.teacherName = ""
-                class4th.pictureData = null
+            for(i in 0..6){
+                for(j in 0..6){
+                    val classData: ClassData = realm.createObject(ClassData::class.java, i*10+j)
+                    classData.className = ""
+                    classData.place = ""
+                    classData.teacherName = ""
+                    classData.pictureData = null
+                }
             }
         }
     }
 
     fun setUpSetting(realm: Realm){
         realm.executeTransaction {
-            for(i in 0..3){
+            for(i in 0..6){
                 val startTime: SettingData = realm.createObject(SettingData::class.java, i*10+0)
                 startTime.hour = "00"
                 startTime.minute = "00"
@@ -93,12 +73,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun setUpOption(realm: Realm){
+        realm.executeTransaction{
+            val optionData: OptionData = realm.createObject(OptionData::class.java, 0)
+            optionData.numOfWeek = 5
+            optionData.numOfTime = 4
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CAMERA && resultCode == Activity.RESULT_OK) {
+            val id = getID()
+            Toast.makeText(this, "$id", Toast.LENGTH_SHORT).show()
+            if(id > 66) return
+
             val realm = Realm.getDefaultInstance()
             realm.executeTransaction{
-                val classData = realm.where(ClassData::class.java).equalTo("id", getID()).findFirst()
+                val classData = realm.where(ClassData::class.java).equalTo("id", id).findFirst()
                 if(classData != null) {
                     val photoData = realm.createObject(PictureData::class.java)
                     photoData.pass = pictureUri.toString()
@@ -163,9 +155,10 @@ class MainActivity : AppCompatActivity() {
     fun getID(): Int{
         val cal = Calendar.getInstance()
         val realm = Realm.getDefaultInstance()
-        var temp = 9
+        val opt = realm.where(OptionData::class.java).equalTo("key", 0).findFirst().numOfWeek
+        var temp = 100
 
-        for(i in 0..3){
+        for(i in 0 until realm.where(OptionData::class.java).equalTo("key", 0).findFirst().numOfTime ){
             val startTimeData = realm.where(SettingData::class.java).equalTo("id", i*10+0).findFirst()
             val endTimeData = realm.where(SettingData::class.java).equalTo("id", i*10+1).findFirst()
             val nowTime = cal.get(Calendar.HOUR_OF_DAY) * 100 + cal.get(Calendar.MINUTE)
@@ -178,13 +171,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        return when(cal.get(Calendar.DAY_OF_WEEK)){
-            Calendar.MONDAY -> 0
-            Calendar.TUESDAY -> 10
-            Calendar.WEDNESDAY -> 20
-            Calendar.THURSDAY -> 30
-            Calendar.FRIDAY -> 40
-            else -> 0
+        return when {
+            cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY -> 0
+            cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY -> 10
+            cal.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY -> 20
+            cal.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY -> 30
+            cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY -> 40
+            cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && opt > 5 -> 50
+            cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && opt > 6 -> 60
+            else -> 70
         } + temp
     }
 

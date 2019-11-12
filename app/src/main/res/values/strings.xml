@@ -19,4 +19,5 @@
     <string name="title_activity_list">一覧</string>
     <string name="title_activity_detail">内容</string>
     <string name="time_to_time">〜</string>
+    <string name="default_time">00:00</string>
 </resources>
