@@ -49,6 +49,7 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
         }
 
         fab.setOnClickListener {
+            // TODO オプションの保存周りを追加すること
             realm.executeTransaction {
                 for(i in 0 until time){
                     val startTime = realm.where(SettingData::class.java).equalTo("id", i*10 + 0).findFirst()

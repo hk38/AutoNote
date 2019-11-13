@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import com.squareup.picasso.Picasso
 import io.realm.Realm
 
 import kotlinx.android.synthetic.main.activity_list.*
@@ -26,11 +27,11 @@ class ListActivity : AppCompatActivity() {
         classData.pictureData?.forEach { item ->
             if(i%3 == 0){
                 row = makeRowLL()
-                listLL.addView(row)
+                list.addView(row)
             }
 
             val iv = makeSquareIV()
-            iv.setImageURI(item.pass?.toUri())
+            Picasso.with(this).load(item.pass.toUri()).fit().centerCrop().into(iv)
             iv.setOnClickListener{
                 intent = Intent(this, DetailActivity::class.java)
                 intent.putExtra("uri", item.pass)
