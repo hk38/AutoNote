@@ -42,6 +42,12 @@ class MainActivity : AppCompatActivity() {
         // FABタップ時に写真撮影
         fab.setOnClickListener { cameraTask() }
 
+        fab.setOnLongClickListener {
+            // ラズパイ経由での写真取得処理を記述
+
+            true
+        }
+
         // 設定ボタンタップ時設定画面に遷移
         imageButtonOption.setOnClickListener{
             val intent = Intent(this, SettingActivity::class.java)
@@ -96,6 +102,8 @@ class MainActivity : AppCompatActivity() {
             val id = getID()
             if(id > 66) return
 
+            // 画像内文字の識別を実行
+            val text = ""
             // 保存処理
             val realm = Realm.getDefaultInstance()
             realm.executeTransaction{
@@ -103,6 +111,7 @@ class MainActivity : AppCompatActivity() {
                 if(classData != null) {
                     val photoData = realm.createObject(PictureData::class.java)
                     photoData.pass = pictureUri.toString()
+                    photoData.text = text
                     classData.pictureData?.add(photoData)
                 }
             }
