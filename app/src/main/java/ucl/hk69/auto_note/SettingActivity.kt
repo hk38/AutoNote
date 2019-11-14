@@ -26,18 +26,25 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
         setContentView(R.layout.activity_setting)
         setSupportActionBar(toolbar)
 
+        // 画面の向きを固定
+        // 将来的にはアラートダイアログの表示方法を変更
         requestedOrientation = if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
+        // 選択肢のリスト
         val weekList = arrayOf("金曜日まで", "土曜日まで", "日曜日まで")
         val timeList = arrayOf("4限まで", "5限まで", "6限まで", "7限まで")
-        val realm = Realm.getDefaultInstance()
+        // 編集ボタンの配列
         val startTimeArray = arrayOf(editStart1st, editStart2nd, editStart3rd, editStart4th, editStart5th, editStart6th, editStart7th)
         val endTimeArray = arrayOf(editEnd1st, editEnd2nd, editEnd3rd, editEnd4th, editEnd5th, editEnd6th, editEnd7th)
+        // realmからデータを取得
+        val realm = Realm.getDefaultInstance()
         val opt = realm.where(OptionData::class.java).equalTo("key", 0).findFirst()
 
+        // 現在の設定を取得
         var timeTemp = opt.numOfTime
         var weekTemp = opt.numOfWeek
 
+        // 設定に応じてレイアウトを変更
         when(timeTemp){
             4 -> textTimeOfDay.text = timeList[0]
             5 -> {
@@ -63,7 +70,7 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
             7 -> textDayOfWeek.text = weekList[2]
         }
 
-
+        // 現在設定の設定とタップ時の処理を記述
         for(i in 0 until opt.numOfTime){
             val startTime = realm.where(SettingData::class.java).equalTo("id", i*10 + 0).findFirst()
             val endTime = realm.where(SettingData::class.java).equalTo("id", i*10+1).findFirst()
@@ -114,6 +121,7 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
         }
 
 
+        // FABタップ時の保存処理
         fab.setOnClickListener {
             realm.executeTransaction {
                 for(i in 0 until opt.numOfTime){
@@ -129,6 +137,7 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
                 }
             }
 
+            // アプリ設定への変更がある場合は注意を表示
             if(timeTemp != opt.numOfTime || weekTemp != opt.numOfWeek){
                 Toast.makeText(this, "再起動後有効になります", Toast.LENGTH_LONG).show()
 

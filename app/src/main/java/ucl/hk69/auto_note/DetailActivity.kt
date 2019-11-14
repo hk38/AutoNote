@@ -13,6 +13,7 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
+        // Picassoで画像表示
         Picasso.with(this).load(intent.getStringExtra("uri").toUri()).fit().centerInside().into(imageView)
     }
 

@@ -7,6 +7,7 @@ import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
 import java.util.*
 
+// タイムピッカー表示用のFragment
 class TimePick : DialogFragment(), TimePickerDialog.OnTimeSetListener {
     // Bundle sould be nullable, Bundle?
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

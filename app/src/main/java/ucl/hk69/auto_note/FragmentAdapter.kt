@@ -41,6 +41,7 @@ private val TAB_TITLES3 = arrayOf(
  */
 class FragmentAdapter(private val context: Context, fm: FragmentManager, behavior: Int): FragmentPagerAdapter(fm, behavior){
 
+    // Fragmentの位置に応じてIDを設定
     override fun getItem(position: Int): Fragment {
         val fragment = TimetableFragment()
         fragment.arguments = Bundle().apply {
@@ -49,6 +50,7 @@ class FragmentAdapter(private val context: Context, fm: FragmentManager, behavio
         return fragment
     }
 
+    // 設定に応じて見る配列を変更
     override fun getPageTitle(position: Int): CharSequence? {
         val realm = Realm.getDefaultInstance()
         val opt = realm.where(OptionData::class.java).equalTo("key", 0).findFirst()
@@ -60,6 +62,7 @@ class FragmentAdapter(private val context: Context, fm: FragmentManager, behavio
         }
     }
 
+    // 設定に応じて返すサイズを変更
     override fun getCount(): Int {
         val realm = Realm.getDefaultInstance()
         val opt = realm.where(OptionData::class.java).equalTo("key", 0).findFirst()

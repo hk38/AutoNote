@@ -19,9 +19,12 @@ class ListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_list)
         setSupportActionBar(toolbar)
 
+        // データを取得
         val realm = Realm.getDefaultInstance()
         val classData = realm.where(ClassData::class.java).equalTo("id", intent.getIntExtra("ID", 0)).findFirst()
 
+        // LinearLayoutに画像を配置
+        // 将来的にはGridLayoutに変更
         var i = 0
         var row = makeRowLL()
         classData.pictureData?.forEach { item ->
@@ -30,8 +33,10 @@ class ListActivity : AppCompatActivity() {
                 list.addView(row)
             }
 
+            // 大量の画像を読み込むことになるのでPicassoを利用
             val iv = makeSquareIV()
             Picasso.with(this).load(item.pass.toUri()).fit().centerCrop().into(iv)
+            // タップ時詳細画面に遷移
             iv.setOnClickListener{
                 intent = Intent(this, DetailActivity::class.java)
                 intent.putExtra("uri", item.pass)
@@ -43,6 +48,7 @@ class ListActivity : AppCompatActivity() {
         }
     }
 
+    // 行のLinearLayout取得
     fun makeRowLL(): LinearLayout{
         val linearLayout = LinearLayout(this)
         val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT)
@@ -50,6 +56,7 @@ class ListActivity : AppCompatActivity() {
         return linearLayout
     }
 
+    // 正方形のImageViewを作成
     fun makeSquareIV(): ImageView{
         val imageView = ImageView(this)
         val params = LinearLayout.LayoutParams(Resources.getSystem().displayMetrics.widthPixels.div(3), Resources.getSystem().displayMetrics.widthPixels.div(3))

@@ -29,22 +29,27 @@ class MainActivity : AppCompatActivity() {
         Realm.init(this)
         val realm = Realm.getDefaultInstance()
 
+        // データがない場合作成
         if(realm.where(ClassData::class.java).findAll().isEmpty()) setUpClass(realm)
         if(realm.where(SettingData::class.java).findAll().isEmpty()) setUpSetting(realm)
         if(realm.where(OptionData::class.java).findAll().isEmpty()) setUpOption(realm)
 
+        // Fragment周りの処理
         val fragmentAdapter = FragmentAdapter(this, supportFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
         view_pager.adapter = fragmentAdapter
         tabs.setupWithViewPager(view_pager)
 
+        // FABタップ時に写真撮影
         fab.setOnClickListener { cameraTask() }
 
+        // 設定ボタンタップ時設定画面に遷移
         imageButtonOption.setOnClickListener{
             val intent = Intent(this, SettingActivity::class.java)
             startActivity(intent)
         }
     }
 
+    // 空の授業データを作成
     fun setUpClass(realm: Realm){
         realm.executeTransaction {
             for(i in 0..6){
@@ -59,6 +64,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // 空の時間設定データを作成
     fun setUpSetting(realm: Realm){
         realm.executeTransaction {
             for(i in 0..6){
@@ -73,6 +79,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // 空のアプリ設定データを作成
     fun setUpOption(realm: Realm){
         realm.executeTransaction{
             val optionData: OptionData = realm.createObject(OptionData::class.java, 0)
@@ -81,13 +88,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // 写真撮影時の結果を処理
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CAMERA && resultCode == Activity.RESULT_OK) {
+            // 設定された時間外の写真はアプリに保存しない
             val id = getID()
-            Toast.makeText(this, "$id", Toast.LENGTH_SHORT).show()
             if(id > 66) return
 
+            // 保存処理
             val realm = Realm.getDefaultInstance()
             realm.executeTransaction{
                 val classData = realm.where(ClassData::class.java).equalTo("id", id).findFirst()
@@ -140,6 +149,7 @@ class MainActivity : AppCompatActivity() {
         takePicture()
     }
 
+    // 写真撮影処理
     fun takePicture() {
         val fileName: String = "${System.currentTimeMillis()}.jpg"
         val contentValues: ContentValues = ContentValues()
@@ -152,12 +162,14 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(intent, CAMERA)
     }
 
+    // IDの取得処理
     fun getID(): Int{
         val cal = Calendar.getInstance()
         val realm = Realm.getDefaultInstance()
         val opt = realm.where(OptionData::class.java).equalTo("key", 0).findFirst().numOfWeek
         var temp = 100
 
+        // 設定された時間データから撮影時刻と一致する時間帯を見つける
         for(i in 0 until realm.where(OptionData::class.java).equalTo("key", 0).findFirst().numOfTime ){
             val startTimeData = realm.where(SettingData::class.java).equalTo("id", i*10+0).findFirst()
             val endTimeData = realm.where(SettingData::class.java).equalTo("id", i*10+1).findFirst()
@@ -171,6 +183,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // 曜日を加えてIDを算出
         return when {
             cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY -> 0
             cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY -> 10

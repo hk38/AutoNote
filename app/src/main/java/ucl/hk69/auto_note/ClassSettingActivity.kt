@@ -15,15 +15,20 @@ class ClassSettingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_class_setting)
         setSupportActionBar(toolbar)
 
+        // データIDを取得
         val id = intent.getIntExtra("ID", 0)
 
+        // realmを呼び出してIDからデータを取得
         val realm = Realm.getDefaultInstance()
         val classData = realm.where(ClassData::class.java).equalTo("id", id).findFirst()
+
+        // Viewに値をセット
         editClassName.setText(classData.className)
         editPlace.setText(classData.place)
         editTeacher.setText(classData.teacherName)
         editMemo.setText(classData.memo)
 
+        // FABが押されたら保存処理
         fab.setOnClickListener {
             realm.executeTransaction{
                 classData.className = editClassName.text.toString()
