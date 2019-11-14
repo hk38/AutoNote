@@ -20,6 +20,8 @@ open class SettingData: RealmObject(){
 open class PictureData: RealmObject(){
     // パスを保持
     open var pass: String = ""
+    // 認識された文字列を格納
+    open var text: String = ""
 }
 
 // 授業のデータ
