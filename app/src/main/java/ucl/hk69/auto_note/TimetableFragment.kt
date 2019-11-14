@@ -21,6 +21,7 @@ class TimetableFragment : Fragment() {
     lateinit var classNameArray: Array<TextView>
     lateinit var placeArray: Array<TextView>
     lateinit var teacherArray: Array<TextView>
+    lateinit var memoArray: Array<TextView>
     var fgmID = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -36,6 +37,7 @@ class TimetableFragment : Fragment() {
         classNameArray = arrayOf(text1stTitle, text2ndTitle, text3rdTitle, text4thTitle, text5thTitle, text6thTitle, text7thTitle)
         placeArray = arrayOf(text1stPlace, text2ndPlace, text3rdPlace, text4thPlace, text5thPlace, text6thPlace, text7thPlace)
         teacherArray = arrayOf(text1stTeacher, text2ndTeacher, text3rdTeacher, text4thTeacher, text5thTeacher, text6thTeacher, text7thTeacher)
+        memoArray = arrayOf(text1stMemo, text2ndMemo, text3rdMemo, text4thMemo, text5thMemo, text6thMemo, text7thMemo)
 
         val time = Realm.getDefaultInstance().where(OptionData::class.java).equalTo("key", 0).findFirst().numOfTime
 
@@ -72,5 +74,10 @@ class TimetableFragment : Fragment() {
         classNameArray[i].text = classData.className
         placeArray[i].text = classData.place
         teacherArray[i].text = classData.teacherName
+
+        if(classData.memo.isNotEmpty()){
+            memoArray[i].visibility = View.VISIBLE
+            memoArray[i].text = classData.memo
+        }else memoArray[i].visibility = View.GONE
     }
 }

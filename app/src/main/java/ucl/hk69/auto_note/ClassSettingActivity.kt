@@ -22,12 +22,14 @@ class ClassSettingActivity : AppCompatActivity() {
         editClassName.setText(classData.className)
         editPlace.setText(classData.place)
         editTeacher.setText(classData.teacherName)
+        editMemo.setText(classData.memo)
 
         fab.setOnClickListener {
             realm.executeTransaction{
                 classData.className = editClassName.text.toString()
                 classData.place = editPlace.text.toString()
                 classData.teacherName = editTeacher.text.toString()
+                classData.memo = editMemo.text.toString()
             }
 
             val result = Intent()

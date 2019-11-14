@@ -23,6 +23,7 @@ open class ClassData: RealmObject() {
     open var className: String = ""
     open var teacherName: String = ""
     open var place: String = ""
+    open var memo: String = ""
     open var pictureData: RealmList<PictureData>? = null
 }
 

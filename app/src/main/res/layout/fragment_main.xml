@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="24dp">
+            android:paddingBottom="80dp">
 
             <LinearLayout
                 android:id="@+id/ll1st"
@@ -77,6 +77,12 @@
                             android:layout_marginStart="8dp"
                             android:textSize="18sp" />
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/text1stMemo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:visibility="gone" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -137,6 +143,12 @@
                             android:layout_marginStart="8dp"
                             android:textSize="18sp" />
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/text2ndMemo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:visibility="gone" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -197,6 +209,12 @@
                             android:layout_marginStart="8dp"
                             android:textSize="18sp" />
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/text3rdMemo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:visibility="gone" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -257,6 +275,12 @@
                             android:layout_marginStart="8dp"
                             android:textSize="18sp" />
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/text4thMemo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:visibility="gone" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -318,6 +342,12 @@
                             android:layout_marginStart="8dp"
                             android:textSize="18sp" />
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/text5thMemo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:visibility="gone" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -379,6 +409,12 @@
                             android:layout_marginStart="8dp"
                             android:textSize="18sp" />
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/text6thMemo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:visibility="gone" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -440,6 +476,12 @@
                             android:layout_marginStart="8dp"
                             android:textSize="18sp" />
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/text7thMemo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:visibility="gone" />
                 </LinearLayout>
 
             </LinearLayout>
