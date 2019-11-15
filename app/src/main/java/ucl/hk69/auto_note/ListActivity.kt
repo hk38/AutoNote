@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import com.squareup.picasso.Picasso
@@ -18,6 +19,12 @@ class ListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list)
         setSupportActionBar(toolbar)
+
+        makeUI()
+    }
+
+    fun makeUI(){
+        list.removeAllViews()
 
         // データを取得
         val realm = Realm.getDefaultInstance()
@@ -43,9 +50,25 @@ class ListActivity : AppCompatActivity() {
                 startActivity(intent)
             }
 
+            iv.setOnLongClickListener {
+                AlertDialog.Builder(this) // FragmentではActivityを取得して生成
+                    .setTitle("写真の削除")
+                    .setMessage("アプリから写真を削除しますか？")
+                    .setPositiveButton("OK") { _, _ ->
+                        realm.executeTransaction {
+                            realm.where(PictureData::class.java).equalTo("pass", item.pass).findAll().deleteAllFromRealm()
+                        }
+                        makeUI()
+                    }
+                    .setNegativeButton("No") { _, _ ->}
+                    .show()
+                true
+            }
+
             row.addView(iv)
             i++
         }
+
     }
 
     // 行のLinearLayout取得
