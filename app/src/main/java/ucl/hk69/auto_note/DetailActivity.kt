@@ -24,6 +24,8 @@ class DetailActivity : AppCompatActivity() {
             Realm.getDefaultInstance().executeTransaction {
                 picData.text = editText.text.toString()
             }
+
+            finish()
         }
     }
 
