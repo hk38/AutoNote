@@ -11,6 +11,6 @@
     <!-- 枠線 width:線の幅、color:線の色 -->
     <stroke
         android:width="2dp"
-        android:color="#ee7800" />
+        android:color="#dcdddd" />
 
 </shape>

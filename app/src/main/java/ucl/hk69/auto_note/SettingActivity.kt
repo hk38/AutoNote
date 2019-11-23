@@ -2,9 +2,9 @@ package ucl.hk69.auto_note
 
 import android.app.AlertDialog
 import android.app.TimePickerDialog
-import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import io.realm.Realm
 
 import kotlinx.android.synthetic.main.activity_setting.*
+import java.lang.Exception
 import java.util.*
 
 
@@ -39,6 +40,9 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
         // realmからデータを取得
         val realm = Realm.getDefaultInstance()
         val opt = realm.where(OptionData::class.java).equalTo("key", 0).findFirst()
+
+        editBGColor.setText(opt.bgColor)
+        constraintLayout.setBackgroundColor(Color.parseColor("#" + opt.bgColor))
 
         // 現在の設定を取得
         var timeTemp = opt.numOfTime
@@ -146,6 +150,13 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
                     opt.numOfWeek = weekTemp
                 }
             }
+
+            if(editBGColor.text.toString().length == 6 && editBGColor.text.toString() != opt.bgColor){
+                realm.executeTransaction {
+                    opt.bgColor = editBGColor.text.toString()
+                }
+                Toast.makeText(this, "再起動後有効になります", Toast.LENGTH_LONG).show()
+            }else Toast.makeText(this, "不正な背景色の指定", Toast.LENGTH_LONG).show()
 
             finish()
         }

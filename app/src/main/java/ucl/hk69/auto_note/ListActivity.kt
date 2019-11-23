@@ -2,6 +2,7 @@ package ucl.hk69.auto_note
 
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -20,14 +21,16 @@ class ListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_list)
         setSupportActionBar(toolbar)
 
-        makeUI()
+        val realm = Realm.getDefaultInstance()
+        coordinatorLayout.setBackgroundColor(Color.parseColor("#" + realm.where(OptionData::class.java).equalTo("key", 0).findFirst().bgColor))
+
+        makeUI(realm)
     }
 
-    fun makeUI(){
+    fun makeUI(realm: Realm){
         list.removeAllViews()
 
         // データを取得
-        val realm = Realm.getDefaultInstance()
         val classData = realm.where(ClassData::class.java).equalTo("id", intent.getIntExtra("ID", 0)).findFirst()
 
         // LinearLayoutに画像を配置
@@ -58,7 +61,7 @@ class ListActivity : AppCompatActivity() {
                         realm.executeTransaction {
                             realm.where(PictureData::class.java).equalTo("pass", item.pass).findAll().deleteAllFromRealm()
                         }
-                        makeUI()
+                        makeUI(realm)
                     }
                     .setNegativeButton("No") { _, _ ->}
                     .show()

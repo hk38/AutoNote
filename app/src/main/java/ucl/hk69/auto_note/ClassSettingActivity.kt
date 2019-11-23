@@ -2,6 +2,7 @@ package ucl.hk69.auto_note
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import io.realm.Realm
@@ -21,6 +22,8 @@ class ClassSettingActivity : AppCompatActivity() {
         // realmを呼び出してIDからデータを取得
         val realm = Realm.getDefaultInstance()
         val classData = realm.where(ClassData::class.java).equalTo("id", id).findFirst()
+
+        constraintLayout.setBackgroundColor(Color.parseColor("#" + realm.where(OptionData::class.java).equalTo("key", 0).findFirst().bgColor))
 
         // Viewに値をセット
         editClassName.setText(classData.className)

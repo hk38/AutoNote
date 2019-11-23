@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AutoNote</string>
+    <string name="app_name">Auto Note</string>
     <string name="tab_text_1">月</string>
     <string name="tab_text_2">火</string>
     <string name="tab_text_3">水</string>
@@ -15,13 +15,18 @@
     <string name="sixth">6</string>
     <string name="seventh">7</string>
     <string name="title_activity_class_setting">授業内容の編集</string>
-    <string name="title_activity_setting">時間設定</string>
+    <string name="title_activity_setting">設定</string>
     <string name="title_activity_list">一覧</string>
-    <string name="title_activity_detail">内容</string>
     <string name="time_to_time">〜</string>
     <string name="default_time">00:00</string>
     <string name="hint_teacher">担当教員を入力</string>
     <string name="hint_class">授業名を入力</string>
     <string name="hint_place">講義場所を入力</string>
     <string name="hint_memo">メモを入力</string>
+    <string name="background">背景色：</string>
+    <string name="day">1日：</string>
+    <string name="day_max">4限まで</string>
+    <string name="week">1週間：</string>
+    <string name="week_max">金曜日まで</string>
+    <string name="bg_color_hint">16進カラーコードを入力</string>
 </resources>

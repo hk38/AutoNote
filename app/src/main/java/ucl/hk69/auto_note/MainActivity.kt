@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -38,6 +39,8 @@ class MainActivity : AppCompatActivity() {
         val fragmentAdapter = FragmentAdapter(this, supportFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
         view_pager.adapter = fragmentAdapter
         tabs.setupWithViewPager(view_pager)
+
+        coordinatorLayout.setBackgroundColor(Color.parseColor("#" + realm.where(OptionData::class.java).equalTo("key", 0).findFirst().bgColor))
 
         // FABタップ時に写真撮影
         fab.setOnClickListener { cameraTask() }
@@ -85,6 +88,7 @@ class MainActivity : AppCompatActivity() {
             val optionData: OptionData = realm.createObject(OptionData::class.java, 0)
             optionData.numOfWeek = 5
             optionData.numOfTime = 4
+            optionData.bgColor = "f6ae54"
         }
     }
 

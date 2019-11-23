@@ -48,4 +48,6 @@ open class OptionData: RealmObject() {
     open var numOfWeek = 5
     // 表示する時間の数
     open var numOfTime = 4
+    // 背景色の設定
+    open var bgColor = "FFFFFF"
 }
