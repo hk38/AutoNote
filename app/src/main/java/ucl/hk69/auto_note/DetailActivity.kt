@@ -17,7 +17,7 @@ class DetailActivity : AppCompatActivity() {
         val picData = Realm.getDefaultInstance().where(PictureData::class.java).equalTo("pass", intent.getStringExtra("uri")).findFirst()
 
         // Picassoで画像表示
-        Picasso.with(this).load(picData.pass.toUri()).fit().centerInside().into(imageView)
+        Picasso.with(this).load(picData.pass.toUri()).fit().centerInside().into(IV)
         editText.setText(picData.text)
 
         fab.setOnClickListener {
