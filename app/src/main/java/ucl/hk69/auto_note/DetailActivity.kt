@@ -10,6 +10,7 @@ import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_detail.*
 
 class DetailActivity : AppCompatActivity() {
+    var rotate = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,15 +18,22 @@ class DetailActivity : AppCompatActivity() {
 
         constraintLayout.setBackgroundColor(Color.parseColor("#" + Realm.getDefaultInstance().where(OptionData::class.java).equalTo("key", 0).findFirst().bgColor))
 
-        // Picassoで画像表示
-        Picasso.with(this).load(intent.getStringExtra("uri").toUri()).fit().centerInside().into(imageView)
+        // 画像表示
+        setPic()
 
         rotateRight.setOnClickListener {
-            imageView.rotation += 90f
+            rotate = (rotate + 90f) % 360
+            setPic()
         }
 
         rotateLeft.setOnClickListener {
-            imageView.rotation -= 90f
+            rotate = (rotate - 90f) % 360
+            setPic()
         }
+    }
+
+    fun setPic(){
+        // Picassoで読み込み
+        Picasso.with(this).load(intent.getStringExtra("uri").toUri()).fit().centerInside().rotate(rotate).into(imageView)
     }
 }
