@@ -42,6 +42,8 @@ class MainActivity : AppCompatActivity() {
 
         coordinatorLayout.setBackgroundColor(Color.parseColor("#" + realm.where(OptionData::class.java).equalTo("key", 0).findFirst().bgColor))
 
+        view_pager.currentItem = getDayOfWeek(realm)
+
         // FABタップ時に写真撮影
         fab.setOnClickListener { cameraTask() }
 
@@ -97,11 +99,12 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CAMERA && resultCode == Activity.RESULT_OK) {
             // 設定された時間外の写真はアプリに保存しない
-            val id = getID()
+
+            val realm = Realm.getDefaultInstance()
+            val id = getID(realm)
             if(id > 66) return
 
             // 保存処理
-            val realm = Realm.getDefaultInstance()
             realm.executeTransaction{
                 val classData = realm.where(ClassData::class.java).equalTo("id", id).findFirst()
                 if(classData != null) {
@@ -167,11 +170,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     // IDの取得処理
-    fun getID(): Int{
+    fun getID(realm: Realm): Int{
         val cal = Calendar.getInstance()
-        val realm = Realm.getDefaultInstance()
-        val opt = realm.where(OptionData::class.java).equalTo("key", 0).findFirst().numOfWeek
-        var temp = 100
 
         // 設定された時間データから撮影時刻と一致する時間帯を見つける
         for(i in 0 until realm.where(OptionData::class.java).equalTo("key", 0).findFirst().numOfTime ){
@@ -182,22 +182,28 @@ class MainActivity : AppCompatActivity() {
             val endTime = Integer.parseInt("${endTimeData.hour}${endTimeData.minute}")
 
             if( nowTime in startTime..endTime){
-                temp = i
-                break
+                // 曜日を加えてIDを算出
+                return getDayOfWeek(realm) * 10 + i
             }
         }
 
-        // 曜日を加えてIDを算出
+        return 100
+    }
+
+    fun getDayOfWeek(realm: Realm): Int{
+        val cal = Calendar.getInstance()
+        val opt = realm.where(OptionData::class.java).equalTo("key", 0).findFirst().numOfWeek
+
         return when {
             cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY -> 0
-            cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY -> 10
-            cal.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY -> 20
-            cal.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY -> 30
-            cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY -> 40
-            cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && opt > 5 -> 50
-            cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && opt > 6 -> 60
-            else -> 70
-        } + temp
+            cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY -> 1
+            cal.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY -> 2
+            cal.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY -> 3
+            cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY -> 4
+            cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && opt > 5 -> 5
+            cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && opt > 6 -> 6
+            else -> 7
+        }
     }
 
 }
