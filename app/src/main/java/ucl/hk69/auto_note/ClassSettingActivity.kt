@@ -1,6 +1,8 @@
 package ucl.hk69.auto_note
 
 import android.app.Activity
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -39,6 +41,10 @@ class ClassSettingActivity : AppCompatActivity() {
                 classData.teacherName = editTeacher.text.toString()
                 classData.memo = editMemo.text.toString()
             }
+
+            val appWM = AppWidgetManager.getInstance(applicationContext)
+            val ids = appWM.getAppWidgetIds(ComponentName(applicationContext, TimeTableWidget::class.java))
+            ids.forEach { updateAppWidget(applicationContext, appWM, it) }
 
             val result = Intent()
             setResult(Activity.RESULT_OK, result)

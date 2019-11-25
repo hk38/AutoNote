@@ -1,0 +1,298 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/wbackLL"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#A0FFFFFF"
+    android:baselineAligned="false"
+    android:padding="@dimen/widget_margin">
+
+    <LinearLayout
+        android:id="@+id/wll1st"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#00FFFFFF"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/wStartTime1st"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:paddingStart="8dp"
+            android:text="@string/default_time" />
+
+        <TextView
+            android:id="@+id/wClass1st"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:text="@string/first"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/wPlace1st"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:paddingStart="8dp"
+            android:paddingBottom="4dp"
+            android:singleLine="true"
+            android:text="@string/first"
+            android:textAlignment="textStart"
+            android:textColor="#000000" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/wll2nd"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#00FFFFFF"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/wStartTime2nd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:paddingStart="8dp"
+            android:text="@string/default_time" />
+
+        <TextView
+            android:id="@+id/wClass2nd"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:text="@string/second"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/wPlace2nd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:paddingStart="8dp"
+            android:paddingBottom="4dp"
+            android:singleLine="true"
+            android:text="@string/second"
+            android:textAlignment="textStart"
+            android:textColor="#000000" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/wll3rd"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#00FFFFFF"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/wStartTime3rd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:paddingStart="8dp"
+            android:text="@string/default_time" />
+
+        <TextView
+            android:id="@+id/wClass3rd"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:text="@string/third"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/wPlace3rd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:paddingStart="8dp"
+            android:paddingBottom="4dp"
+            android:singleLine="true"
+            android:text="@string/third"
+            android:textAlignment="textStart"
+            android:textColor="#000000" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/wll4th"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#00FFFFFF"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/wStartTime4th"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:paddingStart="8dp"
+            android:text="@string/default_time" />
+
+        <TextView
+            android:id="@+id/wClass4th"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:text="@string/fourth"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/wPlace4th"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:paddingStart="8dp"
+            android:paddingBottom="4dp"
+            android:singleLine="true"
+            android:text="@string/fourth"
+            android:textAlignment="textStart"
+            android:textColor="#000000" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/wll5th"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#00FFFFFF"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/wStartTime5th"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:paddingStart="8dp"
+            android:text="@string/default_time" />
+
+        <TextView
+            android:id="@+id/wClass5th"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:text="@string/fifth"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/wPlace5th"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:paddingStart="8dp"
+            android:paddingBottom="4dp"
+            android:singleLine="true"
+            android:text="@string/fifth"
+            android:textAlignment="textStart"
+            android:textColor="#000000" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/wll6th"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#00FFFFFF"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/wStartTime6th"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:paddingStart="8dp"
+            android:text="@string/default_time" />
+
+        <TextView
+            android:id="@+id/wClass6th"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:text="@string/sixth"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/wPlace6th"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:paddingStart="8dp"
+            android:paddingBottom="4dp"
+            android:singleLine="true"
+            android:text="@string/sixth"
+            android:textAlignment="textStart"
+            android:textColor="#000000" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/wll7th"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#00FFFFFF"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/wStartTime7th"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:paddingStart="8dp"
+            android:text="@string/default_time" />
+
+        <TextView
+            android:id="@+id/wClass7th"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:text="@string/seventh"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/wPlace7th"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:paddingStart="8dp"
+            android:paddingBottom="4dp"
+            android:singleLine="true"
+            android:text="@string/seventh"
+            android:textAlignment="textStart"
+            android:textColor="#000000" />
+    </LinearLayout>
+</LinearLayout>

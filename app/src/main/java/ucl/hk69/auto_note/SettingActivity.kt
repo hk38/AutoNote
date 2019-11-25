@@ -2,8 +2,8 @@ package ucl.hk69.auto_note
 
 import android.app.AlertDialog
 import android.app.TimePickerDialog
-import android.content.pm.ActivityInfo
-import android.content.res.Configuration
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -12,12 +12,8 @@ import android.widget.TimePicker
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import io.realm.Realm
-
 import kotlinx.android.synthetic.main.activity_setting.*
-import java.lang.Exception
 import java.util.*
-
-
 
 class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener {
     var timeSetButton: Button? = null
@@ -153,6 +149,10 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
                 }
                 Toast.makeText(this, "再起動後有効になります", Toast.LENGTH_LONG).show()
             }else if(editBGColor.text.toString().length != 6)Toast.makeText(this, "不正な背景色の指定", Toast.LENGTH_LONG).show()
+
+            val appWM = AppWidgetManager.getInstance(applicationContext)
+            val ids = appWM.getAppWidgetIds(ComponentName(applicationContext, TimeTableWidget::class.java))
+            ids.forEach { updateAppWidget(applicationContext, appWM, it) }
 
             finish()
         }
