@@ -1,8 +1,10 @@
 package ucl.hk69.auto_note
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
+import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
 import io.realm.Realm
@@ -17,6 +19,14 @@ class TimeTableWidget : AppWidgetProvider() {
         for (appWidgetId in appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId)
         }
+
+        // アクティビティの指定
+        val intent = Intent(context, MainActivity::class.java)
+        // PendingIntentの取得
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+        val remoteViews = RemoteViews(context.packageName, R.layout.time_table_widget)
+        // インテントによるアクティビティ起動
+        remoteViews.setOnClickPendingIntent(R.id.wbackLL, pendingIntent)
     }
 
     override fun onEnabled(context: Context) {
@@ -51,8 +61,13 @@ fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWid
     val views = RemoteViews(context.packageName, R.layout.time_table_widget)
 
     if(opt.numOfTime > 4) views.setViewVisibility(R.id.wll5th, View.VISIBLE)
+    else views.setViewVisibility(R.id.wll5th, View.GONE)
+
     if(opt.numOfTime > 5) views.setViewVisibility(R.id.wll6th, View.VISIBLE)
+    else views.setViewVisibility(R.id.wll6th, View.GONE)
+
     if(opt.numOfTime > 6) views.setViewVisibility(R.id.wll7th, View.VISIBLE)
+    else views.setViewVisibility(R.id.wll7th, View.GONE)
 
     for(i in 0 until opt.numOfTime){
         val startTime = realm.where(SettingData::class.java).equalTo("id", i*10).findFirst()
@@ -62,7 +77,6 @@ fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWid
         views.setTextViewText(textClassArray[i], classData?.className)
         views.setTextViewText(textPlaceArray[i], classData?.place)
     }
-
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }
