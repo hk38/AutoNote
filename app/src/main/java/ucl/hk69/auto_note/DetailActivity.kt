@@ -28,5 +28,4 @@ class DetailActivity : AppCompatActivity() {
             imageView.rotation -= 90f
         }
     }
-
 }

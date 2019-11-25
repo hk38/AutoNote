@@ -27,10 +27,6 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
         setContentView(R.layout.activity_setting)
         setSupportActionBar(toolbar)
 
-        // 画面の向きを固定
-        // 将来的にはアラートダイアログの表示方法を変更
-        requestedOrientation = if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
         // 選択肢のリスト
         val weekList = arrayOf("金曜日まで", "土曜日まで", "日曜日まで")
         val timeList = arrayOf("4限まで", "5限まで", "6限まで", "7限まで")
@@ -124,7 +120,6 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
                 .show()
         }
 
-
         // FABタップ時の保存処理
         fab.setOnClickListener {
             realm.executeTransaction {
@@ -151,12 +146,13 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
                 }
             }
 
+            // 背景色変更処理
             if(editBGColor.text.toString().length == 6 && editBGColor.text.toString() != opt.bgColor){
                 realm.executeTransaction {
                     opt.bgColor = editBGColor.text.toString()
                 }
                 Toast.makeText(this, "再起動後有効になります", Toast.LENGTH_LONG).show()
-            }else Toast.makeText(this, "不正な背景色の指定", Toast.LENGTH_LONG).show()
+            }else if(editBGColor.text.toString().length != 6)Toast.makeText(this, "不正な背景色の指定", Toast.LENGTH_LONG).show()
 
             finish()
         }
