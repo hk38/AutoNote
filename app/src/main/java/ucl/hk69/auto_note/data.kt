@@ -50,4 +50,5 @@ open class OptionData: RealmObject() {
     open var numOfWeek = 5
     // 表示する時間の数
     open var numOfTime = 4
+    open var bgColor = ""
 }

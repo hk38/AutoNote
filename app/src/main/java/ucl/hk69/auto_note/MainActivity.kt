@@ -2,12 +2,17 @@ package ucl.hk69.auto_note
 
 import android.Manifest
 import android.app.Activity
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothSocket
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -15,12 +20,23 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentPagerAdapter
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.io.*
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
     val CAMERA = 1
     val PERMISSION = 2
     var pictureUri: Uri? = null
+    val adapter = BluetoothAdapter.getDefaultAdapter()
+    val devices = adapter.bondedDevices
+    var soc: BluetoothSocket? = null
+    var OS: OutputStream? = null
+    var osw: OutputStreamWriter? = null
+    var IS: InputStream? = null
+    var isr: InputStreamReader? = null
+    var flag = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,11 +55,64 @@ class MainActivity : AppCompatActivity() {
         view_pager.adapter = fragmentAdapter
         tabs.setupWithViewPager(view_pager)
 
+        coordinatorLayout.setBackgroundColor(Color.parseColor("#" + realm.where(OptionData::class.java).equalTo("key", 0).findFirst().bgColor))
+
+
         // FABタップ時に写真撮影
         fab.setOnClickListener { cameraTask() }
 
         fab.setOnLongClickListener {
             // ラズパイ経由での写真取得処理を記述
+            fab.isClickable = false
+            if(flag){
+                var device: BluetoothDevice? = null
+                devices.forEach{
+                    if(it.name.equals("raspberrypi")) {
+                        device = it
+                    }
+                }
+                soc = device?.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"))
+                soc?.connect()
+                OS = soc?.outputStream
+                osw = OutputStreamWriter(OS)
+                IS = soc?.inputStream
+                isr = InputStreamReader(IS)
+                flag = false
+            }
+
+            GlobalScope.launch {
+                osw?.write(99)
+                osw?.flush()
+                Log.d("xxxxxxxxxxxxxxxxxxx", "msg send")
+
+                val data = isr?.readText()
+
+                val fileName: String = "${System.currentTimeMillis()}.jpg"
+                val contentValues: ContentValues = ContentValues()
+                contentValues.put(MediaStore.Images.Media.TITLE, fileName)
+                contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                pictureUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+                File(pictureUri.toString(), fileName).writer().use{
+                    it.write(data)
+                }
+
+                val id = getID()
+                if(id <= 66) {
+                    val rm = Realm.getDefaultInstance()
+                    rm.executeTransaction {
+                        val classData =
+                            realm.where(ClassData::class.java).equalTo("id", id).findFirst()
+                        if (classData != null) {
+                            val photoData = rm.createObject(PictureData::class.java)
+                            photoData.pass = pictureUri.toString()
+                            photoData.text = ""
+                            classData.pictureData?.add(photoData)
+                        }
+                    }
+                }
+                fab.isClickable = true
+            }
 
             true
         }
@@ -91,6 +160,7 @@ class MainActivity : AppCompatActivity() {
             val optionData: OptionData = realm.createObject(OptionData::class.java, 0)
             optionData.numOfWeek = 5
             optionData.numOfTime = 4
+            optionData.bgColor = "f6ae54"
         }
     }
 
@@ -205,4 +275,13 @@ class MainActivity : AppCompatActivity() {
         } + temp
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        osw?.close()
+        isr?.close()
+        OS?.close()
+        IS?.close()
+        soc?.close()
+    }
 }
