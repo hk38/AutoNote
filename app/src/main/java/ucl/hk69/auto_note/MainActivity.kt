@@ -84,9 +84,9 @@ class MainActivity : AppCompatActivity() {
                 osw?.write(99)
                 osw?.flush()
                 Log.d("xxxxxxxxxxxxxxxxxxx", "msg send")
-
-                val data = isr?.readText()
-
+                Log.d("xxxxxxxxxxxxxxxxxxx", isr.toString())
+                val data = isr?.read()
+                Log.d("xxxxxxxxxxxxxxxxxxx", data.toString())
                 val fileName: String = "${System.currentTimeMillis()}.jpg"
                 val contentValues: ContentValues = ContentValues()
                 contentValues.put(MediaStore.Images.Media.TITLE, fileName)
@@ -94,15 +94,14 @@ class MainActivity : AppCompatActivity() {
                 pictureUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
 
                 File(pictureUri.toString(), fileName).writer().use{
-                    it.write(data)
+                    it.write(data.toString())
                 }
 
                 val id = getID()
                 if(id <= 66) {
                     val rm = Realm.getDefaultInstance()
                     rm.executeTransaction {
-                        val classData =
-                            realm.where(ClassData::class.java).equalTo("id", id).findFirst()
+                        val classData = realm.where(ClassData::class.java).equalTo("id", id).findFirst()
                         if (classData != null) {
                             val photoData = rm.createObject(PictureData::class.java)
                             photoData.pass = pictureUri.toString()
