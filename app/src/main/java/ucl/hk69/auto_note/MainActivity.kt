@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -25,6 +26,8 @@ import kotlinx.coroutines.launch
 import java.io.*
 import java.util.*
 
+
+
 class MainActivity : AppCompatActivity() {
     val CAMERA = 1
     val PERMISSION = 2
@@ -34,8 +37,9 @@ class MainActivity : AppCompatActivity() {
     var soc: BluetoothSocket? = null
     var OS: OutputStream? = null
     var osw: OutputStreamWriter? = null
+    var bw: BufferedWriter? = null
     var IS: InputStream? = null
-    var isr: InputStreamReader? = null
+    var bis: BufferedInputStream? = null
     var flag = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,55 +66,95 @@ class MainActivity : AppCompatActivity() {
         fab.setOnClickListener { cameraTask() }
 
         fab.setOnLongClickListener {
-            // ラズパイ経由での写真取得処理を記述
-            fab.isClickable = false
-            if(flag){
+// Streamテスト用のコピープログラムで動作確認済み
+//            val rm = Realm.getDefaultInstance()
+//            val uri = rm.where(ClassData::class.java).equalTo("id", getID()).findFirst().pictureData?.first()?.pass!!.toUri()
+//            Log.d("HUM2019", uri.toString())
+//            val stream = applicationContext.contentResolver.openInputStream(uri)
+//            val buffered = BufferedInputStream(stream!!)
+//            val buff = buffered.readBytes()
+//
+//            val fileName = "TEST${System.currentTimeMillis()}.jpg"
+//            val bos = BufferedOutputStream(openFileOutput(fileName, Context.MODE_PRIVATE))
+//            bos.write(buff)
+//            bos.flush()
+//            Log.d("HUM2019", "file saved")
+//
+//
+//            val id = getID()
+//            if (id <= 66) {
+//                rm.executeTransaction {
+//                    val classData = realm.where(ClassData::class.java).equalTo("id", id).findFirst()
+//                    if (classData != null) {
+//                        val photoData = rm.createObject(PictureData::class.java)
+//                        photoData.pass = Uri.fromFile(getFileStreamPath(fileName)).toString()
+//                        photoData.text = ""
+//                        classData.pictureData?.add(photoData)
+//                        Log.d("HUM2019", "Realm saved")
+//                    }
+//                }
+//            }
+//            bos.close()
+
+            if (flag) {
                 var device: BluetoothDevice? = null
-                devices.forEach{
-                    if(it.name.equals("raspberrypi")) {
+                devices.forEach {
+                    if (it.name.equals("raspberrypi")) {
                         device = it
                     }
                 }
-                soc = device?.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"))
-                soc?.connect()
-                OS = soc?.outputStream
-                osw = OutputStreamWriter(OS)
-                IS = soc?.inputStream
-                isr = InputStreamReader(IS)
-                flag = false
-            }
 
-            GlobalScope.launch {
-                osw?.write(99)
-                osw?.flush()
-                Log.d("xxxxxxxxxxxxxxxxxxx", "msg send")
-                Log.d("xxxxxxxxxxxxxxxxxxx", isr.toString())
-                val data = isr?.read()
-                Log.d("xxxxxxxxxxxxxxxxxxx", data.toString())
-                val fileName: String = "${System.currentTimeMillis()}.jpg"
-                val contentValues: ContentValues = ContentValues()
-                contentValues.put(MediaStore.Images.Media.TITLE, fileName)
-                contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-                pictureUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+                try {
+                    soc = device?.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"))
+                    soc?.connect()
+                    OS = soc?.outputStream
+                    osw = OutputStreamWriter(OS!!)
+                    bw = BufferedWriter(osw!!)
 
-                File(pictureUri.toString(), fileName).writer().use{
-                    it.write(data.toString())
+                    IS = soc?.inputStream
+                    bis = BufferedInputStream(IS!!)
+                    flag = false
+                    Toast.makeText(applicationContext, "Connect Success", Toast.LENGTH_SHORT).show()
+                }catch (e:Exception){
+                    e.printStackTrace()
+                    flag = true
+                    Toast.makeText(applicationContext, "Connect Failure", Toast.LENGTH_SHORT).show()
                 }
+            }else{
+                GlobalScope.launch {
+                    bw?.write(99)
+                    bw?.flush()
+                    Log.d("HUM2019", "msg send")
 
-                val id = getID()
-                if(id <= 66) {
-                    val rm = Realm.getDefaultInstance()
-                    rm.executeTransaction {
-                        val classData = realm.where(ClassData::class.java).equalTo("id", id).findFirst()
-                        if (classData != null) {
-                            val photoData = rm.createObject(PictureData::class.java)
-                            photoData.pass = pictureUri.toString()
-                            photoData.text = ""
-                            classData.pictureData?.add(photoData)
+                    val buff = bis?.readBytes()
+                    Log.d("HUM2019", "file received")
+
+                    if(buff != null){
+                        val fileName = "${System.currentTimeMillis()}.jpg"
+                        val bos = BufferedOutputStream(openFileOutput(fileName, Context.MODE_PRIVATE))
+                        Log.d("HUM2019", "file is ${Uri.fromFile(getFileStreamPath(fileName))}")
+                        bos.write(buff)
+                        bos.flush()
+                        Log.d("HUM2019", "file saved")
+
+                        val id = getID()
+                        if (id <= 66) {
+                            val rm = Realm.getDefaultInstance()
+                            rm.executeTransactionAsync {
+                                val classData = realm.where(ClassData::class.java).equalTo("id", id).findFirst()
+                                if (classData != null) {
+                                    val photoData = rm.createObject(PictureData::class.java)
+                                    photoData.pass = Uri.fromFile(getFileStreamPath(fileName)).toString()
+                                    photoData.text = ""
+                                    classData.pictureData?.add(photoData)
+                                    Log.d("HUM2019", "Realm saved")
+                                }
+                            }
                         }
+
+                        bos.close()
                     }
                 }
-                fab.isClickable = true
             }
 
             true
@@ -277,10 +321,11 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        osw?.close()
-        isr?.close()
-        OS?.close()
+        bis?.close()
         IS?.close()
+        bw?.close()
+        osw?.close()
+        OS?.close()
         soc?.close()
     }
 }
