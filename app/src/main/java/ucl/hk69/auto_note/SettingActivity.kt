@@ -1,9 +1,11 @@
 package ucl.hk69.auto_note
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.TimePickerDialog
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -132,6 +134,8 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
                 }
             }
 
+            var optCheck = false
+
             // アプリ設定への変更がある場合は注意を表示
             if(timeTemp != opt.numOfTime || weekTemp != opt.numOfWeek){
                 Toast.makeText(this, "再起動後有効になります", Toast.LENGTH_LONG).show()
@@ -140,6 +144,8 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
                     opt.numOfTime = timeTemp
                     opt.numOfWeek = weekTemp
                 }
+
+                optCheck = true
             }
 
             // 背景色変更処理
@@ -148,13 +154,19 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
                     opt.bgColor = editBGColor.text.toString()
                 }
                 Toast.makeText(this, "再起動後有効になります", Toast.LENGTH_LONG).show()
+                optCheck = true
             }else if(editBGColor.text.toString().length != 6)Toast.makeText(this, "不正な背景色の指定", Toast.LENGTH_LONG).show()
 
             val appWM = AppWidgetManager.getInstance(applicationContext)
             val ids = appWM.getAppWidgetIds(ComponentName(applicationContext, TimeTableWidget::class.java))
             ids.forEach { updateAppWidget(applicationContext, appWM, it) }
 
+
+            val intent = Intent()
+            intent.putExtra("optCheck", optCheck)
+            setResult(Activity.RESULT_OK, intent)
             finish()
+
         }
     }
 

@@ -21,6 +21,7 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
     val CAMERA = 1
     val PERMISSION = 2
+    val OPTION = 3
     var pictureUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         // 設定ボタンタップ時設定画面に遷移
         imageButtonOption.setOnClickListener{
             val intent = Intent(this, SettingActivity::class.java)
-            startActivity(intent)
+            startActivityForResult(intent, OPTION)
         }
     }
 
@@ -113,6 +114,9 @@ class MainActivity : AppCompatActivity() {
                     classData.pictureData?.add(photoData)
                 }
             }
+        }else if(requestCode == OPTION && resultCode == Activity.RESULT_OK){
+            if(data?.getBooleanExtra("optCheck", false) == true) finishAndRemoveTask()
+
         }
     }
 

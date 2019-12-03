@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.view.View
 import android.widget.RemoteViews
 import io.realm.Realm
@@ -19,14 +20,6 @@ class TimeTableWidget : AppWidgetProvider() {
         for (appWidgetId in appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId)
         }
-
-        // アクティビティの指定
-        val intent = Intent(context, MainActivity::class.java)
-        // PendingIntentの取得
-        val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
-        val remoteViews = RemoteViews(context.packageName, R.layout.time_table_widget)
-        // インテントによるアクティビティ起動
-        remoteViews.setOnClickPendingIntent(R.id.wbackLL, pendingIntent)
     }
 
     override fun onEnabled(context: Context) {
@@ -69,6 +62,11 @@ fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWid
     if(opt.numOfTime > 6) views.setViewVisibility(R.id.wll7th, View.VISIBLE)
     else views.setViewVisibility(R.id.wll7th, View.GONE)
 
+    // アクティビティの指定
+    val intent = Intent(context, MainActivity::class.java)
+    // PendingIntentの取得
+    val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+
     for(i in 0 until opt.numOfTime){
         val startTime = realm.where(SettingData::class.java).equalTo("id", i*10).findFirst()
         views.setTextViewText(textTimeArray[i], "${startTime?.hour}:${startTime?.minute}")
@@ -76,6 +74,12 @@ fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWid
         val classData = realm.where(ClassData::class.java).equalTo("id", weekId+i).findFirst()
         views.setTextViewText(textClassArray[i], classData?.className)
         views.setTextViewText(textPlaceArray[i], classData?.place)
+
+        views.setInt(textClassArray[i], "setBackgroundColor", Color.parseColor("#50" + opt.bgColor))
+        views.setInt(textPlaceArray[i], "setBackgroundColor", Color.parseColor("#50" + opt.bgColor))
+        views.setOnClickPendingIntent(textTimeArray[i], pendingIntent)
+        views.setOnClickPendingIntent(textClassArray[i], pendingIntent)
+        views.setOnClickPendingIntent(textPlaceArray[i], pendingIntent)
     }
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
