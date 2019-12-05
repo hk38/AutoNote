@@ -45,16 +45,16 @@ class ListActivity : AppCompatActivity() {
 
             // 大量の画像を読み込むことになるのでPicassoを利用
             val iv = makeSquareIV()
-            Picasso.with(this).load(item.pass.toUri()).fit().centerCrop().into(iv)
+            Picasso.with(applicationContext).load(item.pass.toUri()).fit().centerCrop().into(iv)
             // タップ時詳細画面に遷移
             iv.setOnClickListener{
-                intent = Intent(this, DetailActivity::class.java)
+                intent = Intent(applicationContext, DetailActivity::class.java)
                 intent.putExtra("uri", item.pass)
                 startActivity(intent)
             }
 
             iv.setOnLongClickListener {
-                AlertDialog.Builder(this) // FragmentではActivityを取得して生成
+                AlertDialog.Builder(this)
                     .setTitle("写真の削除")
                     .setMessage("アプリから写真を削除しますか？")
                     .setPositiveButton("OK") { _, _ ->
@@ -76,7 +76,7 @@ class ListActivity : AppCompatActivity() {
 
     // 行のLinearLayout取得
     fun makeRowLL(): LinearLayout{
-        val linearLayout = LinearLayout(this)
+        val linearLayout = LinearLayout(applicationContext)
         val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT)
         linearLayout.layoutParams = params
         return linearLayout
@@ -84,7 +84,7 @@ class ListActivity : AppCompatActivity() {
 
     // 正方形のImageViewを作成
     fun makeSquareIV(): ImageView{
-        val imageView = ImageView(this)
+        val imageView = ImageView(applicationContext)
         val params = LinearLayout.LayoutParams(Resources.getSystem().displayMetrics.widthPixels.div(3), Resources.getSystem().displayMetrics.widthPixels.div(3))
 
         imageView.layoutParams = params

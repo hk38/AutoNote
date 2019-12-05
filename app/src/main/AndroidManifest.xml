@@ -37,7 +37,8 @@
             android:name=".SettingActivity"
             android:label="@string/title_activity_setting"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".ClassSettingActivity"
             android:label="@string/title_activity_class_setting"

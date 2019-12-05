@@ -7,12 +7,15 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.SeekBar
 import android.widget.TimePicker
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_setting.*
 import java.util.*
@@ -31,12 +34,42 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
         // 編集ボタンの配列
         val startTimeArray = arrayOf(editStart1st, editStart2nd, editStart3rd, editStart4th, editStart5th, editStart6th, editStart7th)
         val endTimeArray = arrayOf(editEnd1st, editEnd2nd, editEnd3rd, editEnd4th, editEnd5th, editEnd6th, editEnd7th)
+        // seekbarの配列
+        val rgbBarArray = arrayOf(seekBarR, seekBarG, seekBarB)
+        // rgb文字入力の配列
+        val editRgbArray = arrayOf(editR, editG, editB)
         // realmからデータを取得
         val realm = Realm.getDefaultInstance()
         val opt = realm.where(OptionData::class.java).equalTo("key", 0).findFirst()
 
-        editBGColor.setText(opt.bgColor)
         constraintLayout.setBackgroundColor(Color.parseColor("#" + opt.bgColor))
+        val chunck = opt.bgColor.chunked(2)
+
+        for(i in 0..2){
+            editRgbArray[i].setText(Integer.parseInt(chunck[i], 16).toString())
+            rgbBarArray[i].progress = Integer.parseInt(chunck[i], 16)
+
+            editRgbArray[i].addTextChangedListener {
+                when {
+                    editRgbArray[i].text.isEmpty() -> editRgbArray[i].setText(0.toString())
+                    Integer.parseInt(it.toString()) > 255 -> editRgbArray[i].setText(255.toString())
+                    Integer.parseInt(it.toString()) < 0 -> editRgbArray[i].setText(0.toString())
+                }
+                editRgbArray[i].setSelection(editRgbArray[i].text.length)
+
+                rgbBarArray[i].progress = Integer.parseInt(editRgbArray[i].text.toString())
+                constraintLayout.setBackgroundColor(Color.rgb(Integer.parseInt(editR.text.toString()), Integer.parseInt(editG.text.toString()), Integer.parseInt(editB.text.toString())))
+            }
+
+            rgbBarArray[i].setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, formUser: Boolean) {
+                    editRgbArray[i].setText(progress.toString())
+                }
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+
+            })
+        }
 
         // 現在の設定を取得
         var timeTemp = opt.numOfTime
@@ -138,7 +171,7 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
 
             // アプリ設定への変更がある場合は注意を表示
             if(timeTemp != opt.numOfTime || weekTemp != opt.numOfWeek){
-                Toast.makeText(this, "再起動後有効になります", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "再起動後有効になります", Toast.LENGTH_LONG).show()
 
                 realm.executeTransaction{
                     opt.numOfTime = timeTemp
@@ -148,14 +181,16 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
                 optCheck = true
             }
 
+            val bgc = Integer.toHexString((constraintLayout.background as ColorDrawable).color).removePrefix("ff")
+
             // 背景色変更処理
-            if(editBGColor.text.toString().length == 6 && editBGColor.text.toString() != opt.bgColor){
+            if(bgc != opt.bgColor){
                 realm.executeTransaction {
-                    opt.bgColor = editBGColor.text.toString()
-                }
-                Toast.makeText(this, "再起動後有効になります", Toast.LENGTH_LONG).show()
+                    opt.bgColor = bgc
+               }
+                Toast.makeText(applicationContext, "再起動後有効になります", Toast.LENGTH_LONG).show()
                 optCheck = true
-            }else if(editBGColor.text.toString().length != 6)Toast.makeText(this, "不正な背景色の指定", Toast.LENGTH_LONG).show()
+            }
 
             val appWM = AppWidgetManager.getInstance(applicationContext)
             val ids = appWM.getAppWidgetIds(ComponentName(applicationContext, TimeTableWidget::class.java))
@@ -170,8 +205,11 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
         }
     }
 
+
+
     override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
         val str = String.format(Locale.JAPAN, "%02d:%02d", hourOfDay, minute)
         timeSetButton?.text = str
     }
 }
+

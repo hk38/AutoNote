@@ -23,11 +23,14 @@
     <string name="hint_class">授業名を入力</string>
     <string name="hint_place">講義場所を入力</string>
     <string name="hint_memo">メモを入力</string>
-    <string name="background">背景色：</string>
+    <string name="background">背景色設定</string>
     <string name="day">1日：</string>
     <string name="day_max">4限まで</string>
     <string name="week">1週間：</string>
     <string name="week_max">金曜日まで</string>
     <string name="bg_color_hint">16進カラーコードを入力</string>
     <string name="add_widget">Add widget</string>
+    <string name="color_r">R:</string>
+    <string name="color_g">G:</string>
+    <string name="color_b">B:</string>
 </resources>

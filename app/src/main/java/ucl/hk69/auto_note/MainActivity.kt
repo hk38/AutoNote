@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -28,16 +29,28 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Realm.init(this)
+        Realm.init(applicationContext)
         val realm = Realm.getDefaultInstance()
+        var bootFlag = false
 
-        // データがない場合作成
-        if(realm.where(ClassData::class.java).findAll().isEmpty()) setUpClass(realm)
-        if(realm.where(SettingData::class.java).findAll().isEmpty()) setUpSetting(realm)
-        if(realm.where(OptionData::class.java).findAll().isEmpty()) setUpOption(realm)
+        // データがない場合=初回起動時の処理
+        if(realm.where(ClassData::class.java).findAll().isEmpty()) bootFlag = setUpClass(realm)
+        if(realm.where(SettingData::class.java).findAll().isEmpty()) bootFlag = setUpSetting(realm)
+        if(realm.where(OptionData::class.java).findAll().isEmpty()) bootFlag = setUpOption(realm)
+        
+        if(bootFlag){
+            AlertDialog.Builder(this)
+                .setTitle("使い方")
+                .setMessage("授業をタップするとアルバムが開きます\n" +
+                        "長押しすると授業内容が編集できます\n" +
+                        "歯車ボタンから設定画面が変更できます\n" +
+                        "カメラボタンで写真を撮ります")
+                .setPositiveButton("OK"){_, _ -> }
+                .show()
+        }
 
         // Fragment周りの処理
-        val fragmentAdapter = FragmentAdapter(this, supportFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
+        val fragmentAdapter = FragmentAdapter(applicationContext, supportFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
         view_pager.adapter = fragmentAdapter
         tabs.setupWithViewPager(view_pager)
 
@@ -50,13 +63,13 @@ class MainActivity : AppCompatActivity() {
 
         // 設定ボタンタップ時設定画面に遷移
         imageButtonOption.setOnClickListener{
-            val intent = Intent(this, SettingActivity::class.java)
+            val intent = Intent(applicationContext, SettingActivity::class.java)
             startActivityForResult(intent, OPTION)
         }
     }
 
     // 空の授業データを作成
-    fun setUpClass(realm: Realm){
+    fun setUpClass(realm: Realm): Boolean{
         realm.executeTransaction {
             for(i in 0..6){
                 for(j in 0..6){
@@ -68,10 +81,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        
+        return true
     }
 
     // 空の時間設定データを作成
-    fun setUpSetting(realm: Realm){
+    fun setUpSetting(realm: Realm): Boolean{
         realm.executeTransaction {
             for(i in 0..6){
                 val startTime: SettingData = realm.createObject(SettingData::class.java, i*10+0)
@@ -83,16 +98,20 @@ class MainActivity : AppCompatActivity() {
                 endTime.minute = "00"
             }
         }
+        
+        return true
     }
 
     // 空のアプリ設定データを作成
-    fun setUpOption(realm: Realm){
+    fun setUpOption(realm: Realm): Boolean{
         realm.executeTransaction{
             val optionData: OptionData = realm.createObject(OptionData::class.java, 0)
             optionData.numOfWeek = 5
             optionData.numOfTime = 4
             optionData.bgColor = "f6ae54"
         }
+        
+        return true
     }
 
     // 写真撮影時の結果を処理
@@ -130,7 +149,7 @@ class MainActivity : AppCompatActivity() {
                 // パーミッションのリクエストに対して「許可しない」
                 // または以前のリクエストで「二度と表示しない」にチェックを入れられた状態で
                 // 「許可しない」を押されていると、必ずここに呼び出されます。
-                Toast.makeText(this, "パーミッションが許可されていません。", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "パーミッションが許可されていません。", Toast.LENGTH_SHORT).show()
             }
             return
         }
@@ -139,17 +158,17 @@ class MainActivity : AppCompatActivity() {
 
     fun cameraTask() {
         // カメラの権限の確認
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             // 許可されていない
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) && ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 // すでに１度パーミッションのリクエストが行われていて、
                 // ユーザーに「許可しない（二度と表示しないは非チェック）」をされていると
                 // この処理が呼ばれます。
-                Toast.makeText(this, "パーミッションがOFFになっています。", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "パーミッションがOFFになっています。", Toast.LENGTH_SHORT).show()
             } else if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)){
-                Toast.makeText(this, "カメラのパーミッションがOFFになっています。", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "カメラのパーミッションがOFFになっています。", Toast.LENGTH_SHORT).show()
             } else if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-                Toast.makeText(this, "ストレージ書き込みのパーミッションがOFFになっています。", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "ストレージ書き込みのパーミッションがOFFになっています。", Toast.LENGTH_SHORT).show()
             } else {
                 // パーミッションのリクエストを表示
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION)
