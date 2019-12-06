@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         coordinatorLayout.setBackgroundColor(Color.parseColor("#" + realm.where(OptionData::class.java).equalTo("key", 0).findFirst().bgColor))
 
-        view_pager.currentItem = getDayOfWeek(realm)
+        view_pager.currentItem = if(getDayOfWeek(realm) < 7) getDayOfWeek(realm) else 0
 
         // FABタップ時に写真撮影
         fab.setOnClickListener { cameraTask() }

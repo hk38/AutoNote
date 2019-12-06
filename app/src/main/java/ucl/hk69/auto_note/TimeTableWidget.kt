@@ -75,6 +75,9 @@ fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWid
             val classData = realm.where(ClassData::class.java).equalTo("id", weekId + i).findFirst()
             views.setTextViewText(textClassArray[i], classData?.className)
             views.setTextViewText(textPlaceArray[i], classData?.place)
+        }else{
+            views.setTextViewText(textClassArray[i], "")
+            views.setTextViewText(textPlaceArray[i], "")
         }
 
         views.setInt(textClassArray[i], "setBackgroundColor", Color.parseColor("#50" + opt.bgColor))
