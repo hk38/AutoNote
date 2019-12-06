@@ -71,9 +71,11 @@ fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWid
         val startTime = realm.where(SettingData::class.java).equalTo("id", i*10).findFirst()
         views.setTextViewText(textTimeArray[i], "${startTime?.hour}:${startTime?.minute}")
 
-        val classData = realm.where(ClassData::class.java).equalTo("id", weekId+i).findFirst()
-        views.setTextViewText(textClassArray[i], classData?.className)
-        views.setTextViewText(textPlaceArray[i], classData?.place)
+        if(weekId < 70){
+            val classData = realm.where(ClassData::class.java).equalTo("id", weekId + i).findFirst()
+            views.setTextViewText(textClassArray[i], classData?.className)
+            views.setTextViewText(textPlaceArray[i], classData?.place)
+        }
 
         views.setInt(textClassArray[i], "setBackgroundColor", Color.parseColor("#50" + opt.bgColor))
         views.setInt(textPlaceArray[i], "setBackgroundColor", Color.parseColor("#50" + opt.bgColor))
