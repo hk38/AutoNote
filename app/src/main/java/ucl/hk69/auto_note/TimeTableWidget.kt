@@ -34,7 +34,8 @@ class TimeTableWidget : AppWidgetProvider() {
 fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
     val textTimeArray = arrayOf(R.id.wStartTime1st, R.id.wStartTime2nd, R.id.wStartTime3rd, R.id.wStartTime4th, R.id.wStartTime5th, R.id.wStartTime6th, R.id.wStartTime7th)
     val textClassArray = arrayOf(R.id.wClass1st, R.id.wClass2nd, R.id.wClass3rd, R.id.wClass4th, R.id.wClass5th, R.id.wClass6th, R.id.wClass7th)
-    val textPlaceArray = arrayOf(R.id.wPlace1st, R.id.wPlace2nd, R.id.wPlace3rd, R.id.wPlace4th, R.id.wPlace5th, R.id.wPlace6th, R.id.wPlace7th)
+    val backGroundArray = arrayOf(R.id.wll1st, R.id.wll2nd, R.id.wll3rd, R.id.wll4th, R.id.wll5th, R.id.wll6th, R.id.wll7th)
+
     Realm.init(context)
     val realm = Realm.getDefaultInstance()
     val opt = realm.where(OptionData::class.java).equalTo("key", 0).findFirst()
@@ -66,6 +67,7 @@ fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWid
     val intent = Intent(context, MainActivity::class.java)
     // PendingIntentの取得
     val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+    views.setOnClickPendingIntent(R.id.wbackLL, pendingIntent)
 
     for(i in 0 until opt.numOfTime){
         val startTime = realm.where(SettingData::class.java).equalTo("id", i*10).findFirst()
@@ -73,18 +75,12 @@ fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWid
 
         if(weekId < 70){
             val classData = realm.where(ClassData::class.java).equalTo("id", weekId + i).findFirst()
-            views.setTextViewText(textClassArray[i], classData?.className)
-            views.setTextViewText(textPlaceArray[i], classData?.place)
+            views.setTextViewText(textClassArray[i], classData?.className + "\n" + classData?.place)
         }else{
             views.setTextViewText(textClassArray[i], "")
-            views.setTextViewText(textPlaceArray[i], "")
         }
 
-        views.setInt(textClassArray[i], "setBackgroundColor", Color.parseColor("#50" + opt.bgColor))
-        views.setInt(textPlaceArray[i], "setBackgroundColor", Color.parseColor("#50" + opt.bgColor))
-        views.setOnClickPendingIntent(textTimeArray[i], pendingIntent)
-        views.setOnClickPendingIntent(textClassArray[i], pendingIntent)
-        views.setOnClickPendingIntent(textPlaceArray[i], pendingIntent)
+        views.setInt(backGroundArray[i], "setBackgroundColor", Color.parseColor("#ff" + opt.bgColor))
     }
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)

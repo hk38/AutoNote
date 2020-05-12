@@ -16,16 +16,21 @@
             android:id="@+id/wStartTime1st"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#A059b9c6"
+            android:background="#FF59b9c6"
             android:paddingStart="8dp"
             android:singleLine="false"
             android:text="@string/default_time" />
 
         <TextView
-            android:id="@+id/wClass1st"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/wClass1st"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_rounded"
             android:ellipsize="end"
             android:gravity="center"
             android:text="@string/first"
@@ -33,16 +38,10 @@
             android:textColor="#000000" />
 
         <TextView
-            android:id="@+id/wPlace1st"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:paddingStart="8dp"
-            android:paddingBottom="4dp"
-            android:singleLine="true"
-            android:text="@string/first"
-            android:textAlignment="textStart"
-            android:textColor="#000000" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -56,16 +55,21 @@
             android:id="@+id/wStartTime2nd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#A059b9c6"
+            android:background="#FF59b9c6"
             android:paddingStart="8dp"
             android:singleLine="false"
             android:text="@string/default_time" />
 
         <TextView
-            android:id="@+id/wClass2nd"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/wClass2nd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_rounded"
             android:ellipsize="end"
             android:gravity="center"
             android:text="@string/second"
@@ -73,16 +77,10 @@
             android:textColor="#000000" />
 
         <TextView
-            android:id="@+id/wPlace2nd"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:paddingStart="8dp"
-            android:paddingBottom="4dp"
-            android:singleLine="true"
-            android:text="@string/second"
-            android:textAlignment="textStart"
-            android:textColor="#000000" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -96,16 +94,21 @@
             android:id="@+id/wStartTime3rd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#A059b9c6"
+            android:background="#FF59b9c6"
             android:paddingStart="8dp"
             android:singleLine="false"
             android:text="@string/default_time" />
 
         <TextView
-            android:id="@+id/wClass3rd"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/wClass3rd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_rounded"
             android:ellipsize="end"
             android:gravity="center"
             android:text="@string/third"
@@ -113,16 +116,10 @@
             android:textColor="#000000" />
 
         <TextView
-            android:id="@+id/wPlace3rd"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:paddingStart="8dp"
-            android:paddingBottom="4dp"
-            android:singleLine="true"
-            android:text="@string/third"
-            android:textAlignment="textStart"
-            android:textColor="#000000" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -136,16 +133,21 @@
             android:id="@+id/wStartTime4th"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#A059b9c6"
+            android:background="#FF59b9c6"
             android:paddingStart="8dp"
             android:singleLine="false"
             android:text="@string/default_time" />
 
         <TextView
-            android:id="@+id/wClass4th"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/wClass4th"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_rounded"
             android:ellipsize="end"
             android:gravity="center"
             android:text="@string/fourth"
@@ -153,16 +155,10 @@
             android:textColor="#000000" />
 
         <TextView
-            android:id="@+id/wPlace4th"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:paddingStart="8dp"
-            android:paddingBottom="4dp"
-            android:singleLine="true"
-            android:text="@string/fourth"
-            android:textAlignment="textStart"
-            android:textColor="#000000" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -177,16 +173,21 @@
             android:id="@+id/wStartTime5th"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#A059b9c6"
+            android:background="#FF59b9c6"
             android:paddingStart="8dp"
             android:singleLine="false"
             android:text="@string/default_time" />
 
         <TextView
-            android:id="@+id/wClass5th"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/wClass5th"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_rounded"
             android:ellipsize="end"
             android:gravity="center"
             android:text="@string/fifth"
@@ -194,16 +195,10 @@
             android:textColor="#000000" />
 
         <TextView
-            android:id="@+id/wPlace5th"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:paddingStart="8dp"
-            android:paddingBottom="4dp"
-            android:singleLine="true"
-            android:text="@string/fifth"
-            android:textAlignment="textStart"
-            android:textColor="#000000" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -218,16 +213,21 @@
             android:id="@+id/wStartTime6th"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#A059b9c6"
+            android:background="#FF59b9c6"
             android:paddingStart="8dp"
             android:singleLine="false"
             android:text="@string/default_time" />
 
         <TextView
-            android:id="@+id/wClass6th"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/wClass6th"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_rounded"
             android:ellipsize="end"
             android:gravity="center"
             android:text="@string/sixth"
@@ -235,16 +235,10 @@
             android:textColor="#000000" />
 
         <TextView
-            android:id="@+id/wPlace6th"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:paddingStart="8dp"
-            android:paddingBottom="4dp"
-            android:singleLine="true"
-            android:text="@string/sixth"
-            android:textAlignment="textStart"
-            android:textColor="#000000" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -259,16 +253,21 @@
             android:id="@+id/wStartTime7th"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#A059b9c6"
+            android:background="#FF59b9c6"
             android:paddingStart="8dp"
             android:singleLine="false"
             android:text="@string/default_time" />
 
         <TextView
-            android:id="@+id/wClass7th"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/wClass7th"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_rounded"
             android:ellipsize="end"
             android:gravity="center"
             android:text="@string/seventh"
@@ -276,15 +275,9 @@
             android:textColor="#000000" />
 
         <TextView
-            android:id="@+id/wPlace7th"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:paddingStart="8dp"
-            android:paddingBottom="4dp"
-            android:singleLine="true"
-            android:text="@string/seventh"
-            android:textAlignment="textStart"
-            android:textColor="#000000" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
     </LinearLayout>
 </LinearLayout>
