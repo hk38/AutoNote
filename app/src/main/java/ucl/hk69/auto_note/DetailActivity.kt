@@ -34,6 +34,6 @@ class DetailActivity : AppCompatActivity() {
 
     fun setPic(){
         // Picassoで読み込み
-        Picasso.with(applicationContext).load(intent.getStringExtra("uri").toUri()).fit().centerInside().rotate(rotate).into(imageView)
+        Picasso.with(applicationContext).load(intent.getStringExtra("uri")?.toUri()).fit().centerInside().rotate(rotate).into(imageView)
     }
 }
