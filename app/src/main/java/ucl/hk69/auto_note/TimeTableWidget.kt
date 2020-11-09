@@ -38,7 +38,7 @@ fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWid
 
     Realm.init(context)
     val realm = Realm.getDefaultInstance()
-    val opt = realm.where(OptionData::class.java).equalTo("key", 0).findFirst()
+    val opt = realm.where(OptionData::class.java).equalTo("key", 0.toInt()).findFirst()
     val cal = Calendar.getInstance()
     val weekId = when {
         cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY -> 0
@@ -46,21 +46,21 @@ fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWid
         cal.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY -> 20
         cal.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY -> 30
         cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY -> 40
-        cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && opt.numOfWeek > 5 -> 50
-        cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && opt.numOfWeek > 6 -> 60
+        cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && (opt?.numOfWeek ?: 5) > 5 -> 50
+        cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && (opt?.numOfWeek ?: 5) > 6 -> 60
         else -> 70
     }
 
     // Construct the RemoteViews object
     val views = RemoteViews(context.packageName, R.layout.time_table_widget)
 
-    if(opt.numOfTime > 4) views.setViewVisibility(R.id.wll5th, View.VISIBLE)
+    if((opt?.numOfTime ?: 4) > 4) views.setViewVisibility(R.id.wll5th, View.VISIBLE)
     else views.setViewVisibility(R.id.wll5th, View.GONE)
 
-    if(opt.numOfTime > 5) views.setViewVisibility(R.id.wll6th, View.VISIBLE)
+    if((opt?.numOfTime ?: 4) > 5) views.setViewVisibility(R.id.wll6th, View.VISIBLE)
     else views.setViewVisibility(R.id.wll6th, View.GONE)
 
-    if(opt.numOfTime > 6) views.setViewVisibility(R.id.wll7th, View.VISIBLE)
+    if((opt?.numOfTime ?: 4) > 6) views.setViewVisibility(R.id.wll7th, View.VISIBLE)
     else views.setViewVisibility(R.id.wll7th, View.GONE)
 
     // アクティビティの指定
@@ -69,7 +69,7 @@ fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWid
     val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
     views.setOnClickPendingIntent(R.id.wbackLL, pendingIntent)
 
-    for(i in 0 until opt.numOfTime){
+    for(i in 0 until (opt?.numOfTime ?: 4)){
         val startTime = realm.where(SettingData::class.java).equalTo("id", i*10).findFirst()
         views.setTextViewText(textTimeArray[i], "${startTime?.hour}:${startTime?.minute}")
 
@@ -80,8 +80,10 @@ fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWid
             views.setTextViewText(textClassArray[i], "")
         }
 
-        views.setInt(backGroundArray[i], "setBackgroundColor", Color.parseColor("#ff" + opt.bgColor))
+        views.setInt(backGroundArray[i], "setBackgroundColor", Color.parseColor("#ff" + (opt?.bgColor ?: "f6ae54")))
     }
+
+    realm.close()
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }

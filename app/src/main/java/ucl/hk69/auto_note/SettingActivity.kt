@@ -22,6 +22,9 @@ import java.util.*
 
 class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener {
     var timeSetButton: Button? = null
+    private val realm: Realm by lazy {
+        Realm.getDefaultInstance()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,11 +42,10 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
         // rgb文字入力の配列
         val editRgbArray = arrayOf(editR, editG, editB)
         // realmからデータを取得
-        val realm = Realm.getDefaultInstance()
-        val opt = realm.where(OptionData::class.java).equalTo("key", 0).findFirst()
+        val opt = realm.where(OptionData::class.java).equalTo("key", 0.toInt()).findFirst()
 
-        constraintLayout.setBackgroundColor(Color.parseColor("#" + opt.bgColor))
-        val chunck = opt.bgColor.chunked(2)
+        constraintLayout.setBackgroundColor(Color.parseColor("#" + (opt?.bgColor ?: "f6ae54") ))
+        val chunck = opt?.bgColor?.chunked(2) ?: listOf("f6", "ae", "54")
 
         for(i in 0..2){
             editRgbArray[i].setText(Integer.parseInt(chunck[i], 16).toString())
@@ -72,8 +74,8 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
         }
 
         // 現在の設定を取得
-        var timeTemp = opt.numOfTime
-        var weekTemp = opt.numOfWeek
+        var timeTemp = opt?.numOfTime
+        var weekTemp = opt?.numOfWeek
 
         // 設定に応じてレイアウトを変更
         when(timeTemp){
@@ -102,12 +104,12 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
         }
 
         // 現在設定の設定とタップ時の処理を記述
-        for(i in 0 until opt.numOfTime){
+        for(i in 0 until (opt?.numOfTime ?: 4) ){
             val startTime = realm.where(SettingData::class.java).equalTo("id", i*10 + 0).findFirst()
             val endTime = realm.where(SettingData::class.java).equalTo("id", i*10+1).findFirst()
 
-            startTimeArray[i].text = "${startTime.hour}:${startTime.minute}"
-            endTimeArray[i].text = "${endTime.hour}:${endTime.minute}"
+            startTimeArray[i].text = "${startTime?.hour}:${startTime?.minute}"
+            endTimeArray[i].text = "${endTime?.hour}:${endTime?.minute}"
 
             startTimeArray[i].setOnClickListener {
                 timeSetButton = startTimeArray[i]
@@ -154,28 +156,28 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
         // FABタップ時の保存処理
         fab.setOnClickListener {
             realm.executeTransaction {
-                for(i in 0 until opt.numOfTime){
+                for(i in 0 until (opt?.numOfTime ?: 4)){
                     val startTime = realm.where(SettingData::class.java).equalTo("id", i*10 + 0).findFirst()
                     val startText = startTimeArray[i].text.toString().split(":")
-                    startTime.hour = startText[0]
-                    startTime.minute = startText[1]
+                    startTime?.hour = startText[0]
+                    startTime?.minute = startText[1]
 
                     val endTime = realm.where(SettingData::class.java).equalTo("id", i*10+1).findFirst()
                     val endText = endTimeArray[i].text.toString().split(":")
-                    endTime.hour = endText[0]
-                    endTime.minute = endText[1]
+                    endTime?.hour = endText[0]
+                    endTime?.minute = endText[1]
                 }
             }
 
             var optCheck = false
 
             // アプリ設定への変更がある場合は注意を表示
-            if(timeTemp != opt.numOfTime || weekTemp != opt.numOfWeek){
+            if(timeTemp != opt?.numOfTime || weekTemp != opt?.numOfWeek){
                 Toast.makeText(applicationContext, "再起動後有効になります", Toast.LENGTH_LONG).show()
 
                 realm.executeTransaction{
-                    opt.numOfTime = timeTemp
-                    opt.numOfWeek = weekTemp
+                    if(timeTemp != null) opt?.numOfTime = timeTemp as Int
+                    if(weekTemp != null) opt?.numOfWeek = weekTemp as Int
                 }
 
                 optCheck = true
@@ -184,9 +186,9 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
             val bgc = Integer.toHexString((constraintLayout.background as ColorDrawable).color).removePrefix("ff")
 
             // 背景色変更処理
-            if(bgc != opt.bgColor){
+            if(bgc != opt?.bgColor){
                 realm.executeTransaction {
-                    opt.bgColor = bgc
+                    opt?.bgColor = bgc
                }
                 Toast.makeText(applicationContext, "再起動後有効になります", Toast.LENGTH_LONG).show()
                 optCheck = true
@@ -205,7 +207,10 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
         }
     }
 
-
+    override fun onDestroy() {
+        realm.close()
+        super.onDestroy()
+    }
 
     override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
         val str = String.format(Locale.JAPAN, "%02d:%02d", hourOfDay, minute)

@@ -38,6 +38,6 @@ class FragmentAdapter(private val context: Context, fm: FragmentManager, behavio
 
     // 設定に応じて返すサイズを変更
     override fun getCount(): Int {
-        return Realm.getDefaultInstance().where(OptionData::class.java).equalTo("key", 0).findFirst().numOfWeek
+        return Realm.getDefaultInstance().where(OptionData::class.java).equalTo("key", 0.toInt()).findFirst()?.numOfWeek ?: 5
     }
 }

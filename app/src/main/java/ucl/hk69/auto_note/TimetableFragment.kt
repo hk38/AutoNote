@@ -22,6 +22,9 @@ class TimetableFragment : Fragment() {
     lateinit var teacherArray: Array<TextView>
     lateinit var memoArray: Array<TextView>
     var fgmID = 0
+    private val realm: Realm by lazy {
+        Realm.getDefaultInstance()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_main, container, false)
@@ -40,7 +43,7 @@ class TimetableFragment : Fragment() {
         memoArray = arrayOf(text1stMemo, text2ndMemo, text3rdMemo, text4thMemo, text5thMemo, text6thMemo, text7thMemo)
 
         // 何限まで表示するか設定データを取得
-        val time = Realm.getDefaultInstance().where(OptionData::class.java).equalTo("key", 0).findFirst().numOfTime
+        val time = realm.where(OptionData::class.java).equalTo("key", 0.toInt()).findFirst()?.numOfTime ?: 4
 
         // データに応じてViewを表示
         if(time > 4) ll5th.visibility = View.VISIBLE
@@ -72,16 +75,21 @@ class TimetableFragment : Fragment() {
     }
 
     // データが変更された場合の処理
-    fun setClassData(i: Int){
-        val classData = Realm.getDefaultInstance().where(ClassData::class.java).equalTo("id", fgmID + i).findFirst()
+    private fun setClassData(i: Int){
+        val classData = realm.where(ClassData::class.java).equalTo("id", fgmID + i).findFirst()
 
-        classNameArray[i].text = classData.className
-        placeArray[i].text = classData.place
-        teacherArray[i].text = classData.teacherName
+        classNameArray[i].text = classData?.className
+        placeArray[i].text = classData?.place
+        teacherArray[i].text = classData?.teacherName
 
-        if(classData.memo.isNotEmpty()){
+        if(classData?.memo.isNullOrBlank()){
             memoArray[i].visibility = View.VISIBLE
-            memoArray[i].text = classData.memo
+            memoArray[i].text = classData?.memo
         }else memoArray[i].visibility = View.GONE
+    }
+
+    override fun onDestroy() {
+        realm.close()
+        super.onDestroy()
     }
 }

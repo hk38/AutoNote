@@ -24,19 +24,20 @@ class MainActivity : AppCompatActivity() {
     val PERMISSION = 2
     val OPTION = 3
     var pictureUri: Uri? = null
+    private val realm: Realm by lazy {
+        Realm.getDefaultInstance()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Realm.init(applicationContext)
-        val realm = Realm.getDefaultInstance()
         var bootFlag = false
 
         // データがない場合=初回起動時の処理
-        if(realm.where(ClassData::class.java).findAll().isEmpty()) bootFlag = setUpClass(realm)
-        if(realm.where(SettingData::class.java).findAll().isEmpty()) bootFlag = setUpSetting(realm)
-        if(realm.where(OptionData::class.java).findAll().isEmpty()) bootFlag = setUpOption(realm)
+        if(realm.where(ClassData::class.java).findAll().isEmpty()) bootFlag = setUpClass()
+        if(realm.where(SettingData::class.java).findAll().isEmpty()) bootFlag = setUpSetting()
+        if(realm.where(OptionData::class.java).findAll().isEmpty()) bootFlag = setUpOption()
         
         if(bootFlag){
             AlertDialog.Builder(this)
@@ -55,7 +56,8 @@ class MainActivity : AppCompatActivity() {
         view_pager.adapter = fragmentAdapter
         tabs.setupWithViewPager(view_pager)
 
-        coordinatorLayout.setBackgroundColor(Color.parseColor("#" + realm.where(OptionData::class.java).equalTo("key", 0).findFirst().bgColor))
+        val bgColor = realm.where(OptionData::class.java).equalTo("key", 0.toInt()).findFirst()?.bgColor ?: "f6ae54"
+        coordinatorLayout.setBackgroundColor(Color.parseColor("#$bgColor"))
 
         view_pager.currentItem = if(getDayOfWeek(realm) < 7) getDayOfWeek(realm) else 0
 
@@ -70,7 +72,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // 空の授業データを作成
-    fun setUpClass(realm: Realm): Boolean{
+    private fun setUpClass(): Boolean{
         realm.executeTransaction {
             for(i in 0..6){
                 for(j in 0..6){
@@ -87,7 +89,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // 空の時間設定データを作成
-    fun setUpSetting(realm: Realm): Boolean{
+    private fun setUpSetting(): Boolean{
         realm.executeTransaction {
             for(i in 0..6){
                 val startTime: SettingData = realm.createObject(SettingData::class.java, i*10+0)
@@ -104,7 +106,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // 空のアプリ設定データを作成
-    fun setUpOption(realm: Realm): Boolean{
+    private fun setUpOption(): Boolean{
         realm.executeTransaction{
             val optionData: OptionData = realm.createObject(OptionData::class.java, 0)
             optionData.numOfWeek = 5
@@ -157,7 +159,7 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
-    fun cameraTask() {
+    private fun cameraTask() {
         // カメラの権限の確認
         if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             // 許可されていない
@@ -181,7 +183,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // 写真撮影処理
-    fun takePicture() {
+    private fun takePicture() {
         val fileName: String = "${System.currentTimeMillis()}.jpg"
         val contentValues: ContentValues = ContentValues()
         contentValues.put(MediaStore.Images.Media.TITLE, fileName)
@@ -194,16 +196,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     // IDの取得処理
-    fun getID(realm: Realm): Int{
+    private fun getID(realm: Realm): Int{
         val cal = Calendar.getInstance()
 
         // 設定された時間データから撮影時刻と一致する時間帯を見つける
-        for(i in 0 until realm.where(OptionData::class.java).equalTo("key", 0).findFirst().numOfTime ){
+        for(i in 0 until (realm.where(OptionData::class.java).equalTo("key", 0.toInt()).findFirst()?.numOfTime ?: 4) ){
             val startTimeData = realm.where(SettingData::class.java).equalTo("id", i*10+0).findFirst()
             val endTimeData = realm.where(SettingData::class.java).equalTo("id", i*10+1).findFirst()
             val nowTime = cal.get(Calendar.HOUR_OF_DAY) * 100 + cal.get(Calendar.MINUTE)
-            val startTime = Integer.parseInt("${startTimeData.hour}${startTimeData.minute}")
-            val endTime = Integer.parseInt("${endTimeData.hour}${endTimeData.minute}")
+            val startTime = Integer.parseInt("${startTimeData?.hour}${startTimeData?.minute}")
+            val endTime = Integer.parseInt("${endTimeData?.hour}${endTimeData?.minute}")
 
             if( nowTime in startTime..endTime){
                 // 曜日を加えてIDを算出
@@ -214,9 +216,9 @@ class MainActivity : AppCompatActivity() {
         return 100
     }
 
-    fun getDayOfWeek(realm: Realm): Int{
+    private fun getDayOfWeek(realm: Realm): Int{
         val cal = Calendar.getInstance()
-        val opt = realm.where(OptionData::class.java).equalTo("key", 0).findFirst().numOfWeek
+        val opt = realm.where(OptionData::class.java).equalTo("key", 0.toInt()).findFirst()?.numOfWeek ?: 5
 
         return when {
             cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY -> 0
@@ -230,4 +232,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        realm.close()
+        super.onDestroy()
+    }
 }
