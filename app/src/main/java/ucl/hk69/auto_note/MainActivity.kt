@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         var bootFlag = false
 
-        // データがない場合=初回起動時の処理
+        // データがない場合は初回起動時の処理
         if(realm.where(ClassData::class.java).findAll().isEmpty()) bootFlag = setUpClass()
         if(realm.where(SettingData::class.java).findAll().isEmpty()) bootFlag = setUpSetting()
         if(realm.where(OptionData::class.java).findAll().isEmpty()) bootFlag = setUpOption()
@@ -56,10 +56,11 @@ class MainActivity : AppCompatActivity() {
         view_pager.adapter = fragmentAdapter
         tabs.setupWithViewPager(view_pager)
 
+        // アプリデータから背景色を取得して設定
         val bgColor = realm.where(OptionData::class.java).equalTo("key", 0.toInt()).findFirst()?.bgColor ?: "f6ae54"
         coordinatorLayout.setBackgroundColor(Color.parseColor("#$bgColor"))
 
-        view_pager.currentItem = if(getDayOfWeek(realm) < 7) getDayOfWeek(realm) else 0
+        view_pager.currentItem = if(getDayOfWeek() < 7) getDayOfWeek() else 0
 
         // FABタップ時に写真撮影
         fab.setOnClickListener { cameraTask() }
@@ -122,9 +123,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CAMERA && resultCode == Activity.RESULT_OK) {
             // 設定された時間外の写真はアプリに保存しない
-
-            val realm = Realm.getDefaultInstance()
-            val id = getID(realm)
+            val id = getID()
             if(id > 66) return
 
             // 保存処理
@@ -137,21 +136,19 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }else if(requestCode == OPTION && resultCode == Activity.RESULT_OK){
+            // アプリ設定が変更されていた場合，表示を変更するため一度アプリを終了する
             if(data?.getBooleanExtra("optCheck", false) == true) finishAndRemoveTask()
-
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == PERMISSION) {
-            // requestPermissionsで設定した順番で結果が格納されています。
+            // requestPermissionsで設定した結果が格納
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 // 許可されたので処理を続行
                 takePicture()
             } else {
-                // パーミッションのリクエストに対して「許可しない」
-                // または以前のリクエストで「二度と表示しない」にチェックを入れられた状態で
-                // 「許可しない」を押されていると、必ずここに呼び出されます。
+                // パーミッションリクエストが許可されなかった場合に表示
                 Toast.makeText(applicationContext, "パーミッションが許可されていません。", Toast.LENGTH_SHORT).show()
             }
             return
@@ -164,9 +161,7 @@ class MainActivity : AppCompatActivity() {
         if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             // 許可されていない
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) && ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                // すでに１度パーミッションのリクエストが行われていて、
-                // ユーザーに「許可しない（二度と表示しないは非チェック）」をされていると
-                // この処理が呼ばれます。
+                // パーミッションリクエストが拒否されている場合
                 Toast.makeText(applicationContext, "パーミッションがOFFになっています。", Toast.LENGTH_SHORT).show()
             } else if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)){
                 Toast.makeText(applicationContext, "カメラのパーミッションがOFFになっています。", Toast.LENGTH_SHORT).show()
@@ -178,25 +173,27 @@ class MainActivity : AppCompatActivity() {
             }
             return
         }
-        // 許可されている、またはAndroid 6.0以前
+        // 許可されている，またはAndroid 6.0以前
         takePicture()
     }
 
     // 写真撮影処理
     private fun takePicture() {
-        val fileName: String = "${System.currentTimeMillis()}.jpg"
-        val contentValues: ContentValues = ContentValues()
+        // ファイル名とURIを作成
+        val fileName = "${System.currentTimeMillis()}.jpg"
+        val contentValues = ContentValues()
         contentValues.put(MediaStore.Images.Media.TITLE, fileName)
         contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
         pictureUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
 
-        val intent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        // カメラを起動
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri)
         startActivityForResult(intent, CAMERA)
     }
 
     // IDの取得処理
-    private fun getID(realm: Realm): Int{
+    private fun getID(): Int{
         val cal = Calendar.getInstance()
 
         // 設定された時間データから撮影時刻と一致する時間帯を見つける
@@ -209,15 +206,17 @@ class MainActivity : AppCompatActivity() {
 
             if( nowTime in startTime..endTime){
                 // 曜日を加えてIDを算出
-                return getDayOfWeek(realm) * 10 + i
+                return getDayOfWeek() * 10 + i
             }
         }
 
         return 100
     }
 
-    private fun getDayOfWeek(realm: Realm): Int{
+    // 曜日の取得処理
+    private fun getDayOfWeek(): Int{
         val cal = Calendar.getInstance()
+        // 設定データの一週間の設定を取得
         val opt = realm.where(OptionData::class.java).equalTo("key", 0.toInt()).findFirst()?.numOfWeek ?: 5
 
         return when {

@@ -9,7 +9,6 @@ class RealmApp: Application() {
         super.onCreate()
         Realm.init(this)
         val realmConfig = RealmConfiguration.Builder()
-            .deleteRealmIfMigrationNeeded()
             .build()
         Realm.setDefaultConfiguration(realmConfig)
     }

@@ -26,17 +26,21 @@ class PicListAdapter(private val context: Context,
     override fun onBindViewHolder(holder: PicListAdapter.ViewHolder, position: Int) {
         val item = picList?.get(position) ?: return
 
+        // タップ時の動作を設定
         holder.container.setOnClickListener{
             clickListener.onItemClick(item)
         }
+        // 長押し時の動作を設定
         holder.container.setOnLongClickListener {
             longClickListener.onItemLongClick(item)
             true
         }
 
+        // 画像を設定
         holder.imageView.setImageURI(item.pass.toUri())
     }
 
+    // リストの要素数を返す
     override fun getItemCount(): Int = picList?.size ?: 0
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view){

@@ -41,12 +41,13 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
         val rgbBarArray = arrayOf(seekBarR, seekBarG, seekBarB)
         // rgb文字入力の配列
         val editRgbArray = arrayOf(editR, editG, editB)
-        // realmからデータを取得
+        // アプリデータを取得
         val opt = realm.where(OptionData::class.java).equalTo("key", 0.toInt()).findFirst()
-
+        // 背景色を設定
         constraintLayout.setBackgroundColor(Color.parseColor("#" + (opt?.bgColor ?: "f6ae54") ))
         val chunck = opt?.bgColor?.chunked(2) ?: listOf("f6", "ae", "54")
 
+        // 色設定EditTextとSeekBarを結びつける
         for(i in 0..2){
             editRgbArray[i].setText(Integer.parseInt(chunck[i], 16).toString())
             rgbBarArray[i].progress = Integer.parseInt(chunck[i], 16)
@@ -124,6 +125,7 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
             }
         }
 
+        // 一週間に授業日が何日あるか設定
         textDayOfWeek.setOnClickListener{
             AlertDialog.Builder(this)
                 .setTitle("1週間の設定")
@@ -138,6 +140,7 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
                 .show()
         }
 
+        // 一日に授業が何コマあるか設定
         textTimeOfDay.setOnClickListener{
             AlertDialog.Builder(this)
                 .setTitle("1日の設定")
@@ -194,11 +197,13 @@ class SettingActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener 
                 optCheck = true
             }
 
+            // ウィジェットを更新
             val appWM = AppWidgetManager.getInstance(applicationContext)
             val ids = appWM.getAppWidgetIds(ComponentName(applicationContext, TimeTableWidget::class.java))
             ids.forEach { updateAppWidget(applicationContext, appWM, it) }
 
 
+            // 元のアクティビティに返す
             val intent = Intent()
             intent.putExtra("optCheck", optCheck)
             setResult(Activity.RESULT_OK, intent)

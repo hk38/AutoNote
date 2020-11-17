@@ -32,10 +32,12 @@ class TimeTableWidget : AppWidgetProvider() {
 }
 
 fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    // Viewの配列
     val textTimeArray = arrayOf(R.id.wStartTime1st, R.id.wStartTime2nd, R.id.wStartTime3rd, R.id.wStartTime4th, R.id.wStartTime5th, R.id.wStartTime6th, R.id.wStartTime7th)
     val textClassArray = arrayOf(R.id.wClass1st, R.id.wClass2nd, R.id.wClass3rd, R.id.wClass4th, R.id.wClass5th, R.id.wClass6th, R.id.wClass7th)
     val backGroundArray = arrayOf(R.id.wll1st, R.id.wll2nd, R.id.wll3rd, R.id.wll4th, R.id.wll5th, R.id.wll6th, R.id.wll7th)
 
+    // Realmから設定データを取得
     Realm.init(context)
     val realm = Realm.getDefaultInstance()
     val opt = realm.where(OptionData::class.java).equalTo("key", 0.toInt()).findFirst()
@@ -54,6 +56,7 @@ fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWid
     // Construct the RemoteViews object
     val views = RemoteViews(context.packageName, R.layout.time_table_widget)
 
+    // 一日のコマ数に応じて不要なViewを非表示
     if((opt?.numOfTime ?: 4) > 4) views.setViewVisibility(R.id.wll5th, View.VISIBLE)
     else views.setViewVisibility(R.id.wll5th, View.GONE)
 
@@ -70,16 +73,20 @@ fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWid
     views.setOnClickPendingIntent(R.id.wbackLL, pendingIntent)
 
     for(i in 0 until (opt?.numOfTime ?: 4)){
+        // 授業開始時間を取得して表示
         val startTime = realm.where(SettingData::class.java).equalTo("id", i*10).findFirst()
         views.setTextViewText(textTimeArray[i], "${startTime?.hour}:${startTime?.minute}")
 
+        // 範囲外のIDがあってもエラーにならないよう分岐
         if(weekId < 70){
+            // 授業データを取得して表示
             val classData = realm.where(ClassData::class.java).equalTo("id", weekId + i).findFirst()
             views.setTextViewText(textClassArray[i], classData?.className + "\n" + classData?.place)
         }else{
             views.setTextViewText(textClassArray[i], "")
         }
 
+        // 背景色を設定
         views.setInt(backGroundArray[i], "setBackgroundColor", Color.parseColor("#ff" + (opt?.bgColor ?: "f6ae54")))
     }
 

@@ -24,8 +24,9 @@ class ClassSettingActivity : AppCompatActivity() {
         // データIDを取得
         val id = intent.getIntExtra("ID", 0)
 
-        // IDからデータを取得
+        // IDから授業データを取得
         val classData = realm.where(ClassData::class.java).equalTo("id", id).findFirst()
+        // アプリデータから背景色を取得して設定
         val bgColor = realm.where(OptionData::class.java).equalTo("key", 0.toInt()).findFirst()?.bgColor ?: "f6ae54"
         constraintLayout.setBackgroundColor(Color.parseColor("#$bgColor"))
 
@@ -44,10 +45,12 @@ class ClassSettingActivity : AppCompatActivity() {
                 classData?.memo = editMemo.text.toString()
             }
 
+            // ウィジェット側に反映
             val appWM = AppWidgetManager.getInstance(applicationContext)
             val ids = appWM.getAppWidgetIds(ComponentName(applicationContext, TimeTableWidget::class.java))
             ids.forEach { updateAppWidget(applicationContext, appWM, it) }
 
+            // 元のアクティビティに返す
             val result = Intent()
             setResult(Activity.RESULT_OK, result)
             finish()
