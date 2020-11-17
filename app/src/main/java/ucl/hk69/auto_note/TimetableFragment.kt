@@ -82,7 +82,7 @@ class TimetableFragment : Fragment() {
         placeArray[i].text = classData?.place
         teacherArray[i].text = classData?.teacherName
 
-        if(classData?.memo.isNullOrBlank()){
+        if(!classData?.memo.isNullOrBlank()){
             memoArray[i].visibility = View.VISIBLE
             memoArray[i].text = classData?.memo
         }else memoArray[i].visibility = View.GONE
